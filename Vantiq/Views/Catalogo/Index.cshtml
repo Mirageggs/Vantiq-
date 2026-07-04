@@ -1,0 +1,161 @@
+@model List<Reloj>
+@{
+    ViewData["Title"] = "Catálogo";
+    string? q = ViewBag.Q;
+    var hayFiltro = !string.IsNullOrEmpty(q) || ViewBag.IdCategoria != null;
+    var retorno = Context.Request.Path + Context.Request.QueryString;
+}
+
+@* ══ HERO (sección "El Tiempo, Redefinido" del Figma) — solo en la portada limpia ══ *@
+@if (!hayFiltro)
+{
+    <section class="hero-vantiq">
+        <div class="hero-bg"></div>
+        <img class="hero-img"
+             src="https://images.unsplash.com/photo-1524592094714-0f0654e20314?w=1600&h=900&fit=crop&auto=format"
+             alt="" aria-hidden="true" />
+        <div class="container position-relative py-5">
+            <div class="row align-items-center g-5">
+                <div class="col-lg-7">
+                    <p class="eyebrow mb-2">Colección 2026</p>
+                    <h1 class="hero-title font-display mb-4">
+                        El Tiempo,<br /><span class="text-gold">Redefinido.</span>
+                    </h1>
+                    <p class="text-muted-vq mb-4" style="max-width: 30rem;">
+                        Relojes de autor para quienes entienden el lujo. Cada pieza es una
+                        declaración de precisión, diseño y distinción.
+                    </p>
+                    <div class="d-flex flex-wrap gap-3 mb-5">
+                        <a href="#coleccion" class="btn btn-gold px-4 py-2 d-flex align-items-center gap-2">
+                            Explorar colección <i class="bi bi-chevron-right" aria-hidden="true"></i>
+                        </a>
+                        <a class="btn btn-outline-gold px-4 py-2" target="_blank" rel="noopener"
+                           href="https://wa.me/@(ViewBag.Celular ?? "51999999999")?text=Hola%20VANTIQ,%20quiero%20asesor%C3%ADa">
+                            Asesoría personalizada
+                        </a>
+                    </div>
+                    <div class="d-flex gap-5">
+                        <div>
+                            <p class="hero-stat font-display mb-0">@Model.Count</p>
+                            <p class="eyebrow mt-1">Modelos</p>
+                        </div>
+                        <div>
+                            <p class="hero-stat font-display mb-0">3</p>
+                            <p class="eyebrow mt-1">Colecciones</p>
+                        </div>
+                        <div>
+                            <p class="hero-stat font-display mb-0">100%</p>
+                            <p class="eyebrow mt-1">Garantía</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    @* Franja de confianza (íconos del Figma) *@
+    <div class="trust-strip py-3">
+        <div class="container">
+            <div class="row g-3 text-center text-md-start">
+                <div class="col-6 col-md-3 d-flex align-items-center gap-2 justify-content-center justify-content-md-start">
+                    <span class="trust-ico"><i class="bi bi-shield-check" aria-hidden="true"></i></span>
+                    <div><p class="small fw-semibold mb-0">Garantía oficial</p><p class="small text-muted-vq mb-0">En cada compra</p></div>
+                </div>
+                <div class="col-6 col-md-3 d-flex align-items-center gap-2 justify-content-center justify-content-md-start">
+                    <span class="trust-ico"><i class="bi bi-truck" aria-hidden="true"></i></span>
+                    <div><p class="small fw-semibold mb-0">Envío a todo el Perú</p><p class="small text-muted-vq mb-0">Courier con seguimiento</p></div>
+                </div>
+                <div class="col-6 col-md-3 d-flex align-items-center gap-2 justify-content-center justify-content-md-start">
+                    <span class="trust-ico"><i class="bi bi-patch-check" aria-hidden="true"></i></span>
+                    <div><p class="small fw-semibold mb-0">Autenticidad</p><p class="small text-muted-vq mb-0">Certificado de origen</p></div>
+                </div>
+                <div class="col-6 col-md-3 d-flex align-items-center gap-2 justify-content-center justify-content-md-start">
+                    <span class="trust-ico"><i class="bi bi-whatsapp" aria-hidden="true"></i></span>
+                    <div><p class="small fw-semibold mb-0">Soporte directo</p><p class="small text-muted-vq mb-0">Atención por WhatsApp</p></div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@* ══ GRID DE COLECCIÓN ══ *@
+<div class="container py-5" id="coleccion">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end gap-3 mb-4">
+        <div>
+            <h2 class="font-display mb-1">
+                @if (!string.IsNullOrEmpty(q)) { <text>Resultados para "@q"</text> }
+                else { <text>Nuestra colección</text> }
+            </h2>
+            <p class="text-muted-vq small mb-0">@Model.Count relojes disponibles</p>
+        </div>
+    </div>
+
+    @if (Model.Count == 0)
+    {
+        <div class="text-center py-5 text-muted-vq">
+            <i class="bi bi-search d-block mb-3" style="font-size:2.4rem; opacity:.3;" aria-hidden="true"></i>
+            <p>No se encontraron relojes con ese criterio.</p>
+            <a class="btn btn-outline-gold" asp-action="Index">Ver todo el catálogo</a>
+        </div>
+    }
+    else
+    {
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 row-cols-xl-4 g-4">
+            @foreach (var reloj in Model)
+            {
+                var agotado = reloj.StockActual == 0 || reloj.IdEstadoReloj == 2;
+                <div class="col">
+                    <article class="card-producto h-100 d-flex flex-column">
+                        <a asp-action="Detalle" asp-route-id="@reloj.IdReloj" class="foto d-block"
+                           aria-label="Ver @reloj.ModeloReloj.NombreModelo">
+                            <img src="@reloj.UrlImagen" alt="@reloj.ModeloReloj.NombreModelo — @reloj.CodigoSKU" loading="lazy" />
+                            <div class="position-absolute top-0 start-0 m-2 d-flex flex-column gap-1">
+                                <span class="badge-vq badge-gold">@reloj.ModeloReloj.Categoria.NombreCategoria</span>
+                                @if (agotado)
+                                {
+                                    <span class="badge-vq badge-danger">Agotado</span>
+                                }
+                                else if (reloj.StockActual <= 3)
+                                {
+                                    <span class="badge-vq badge-warn">Últimas @reloj.StockActual</span>
+                                }
+                            </div>
+                        </a>
+                        <div class="p-3 d-flex flex-column flex-grow-1">
+                            <p class="eyebrow mb-1">@reloj.Marca.NombreMarca · @reloj.CodigoSKU</p>
+                            <h3 class="h6 mb-2 font-display">@reloj.ModeloReloj.NombreModelo</h3>
+                            <div class="precio mb-3">@Formato.Soles(reloj.Precio)</div>
+                            <div class="mt-auto d-flex gap-2">
+                                <a class="btn btn-outline-gold btn-sm flex-grow-1"
+                                   asp-action="Detalle" asp-route-id="@reloj.IdReloj">Ver detalle</a>
+                                <form asp-controller="Carrito" asp-action="Agregar" method="post" class="d-inline">
+                                    <input type="hidden" name="idReloj" value="@reloj.IdReloj" />
+                                    <input type="hidden" name="returnUrl" value="@retorno" />
+                                    <button type="submit" class="btn btn-gold btn-sm" @(agotado ? "disabled" : "")
+                                            aria-label="Añadir @reloj.ModeloReloj.NombreModelo al carrito">
+                                        <i class="bi bi-plus-lg" aria-hidden="true"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@* Banner de registro para invitados (sección del Figma) *@
+@if (User.Identity?.IsAuthenticated != true)
+{
+    <div class="trust-strip py-5">
+        <div class="container text-center" style="max-width: 40rem;">
+            <h3 class="font-display mb-2">Crea tu cuenta y agiliza tus compras</h3>
+            <p class="text-muted-vq mb-3">Historial de pedidos, checkout precargado y seguimiento de tus envíos.</p>
+            <a asp-controller="Acceso" asp-action="Registro"
+               class="btn btn-gold px-4 py-2 d-inline-flex align-items-center gap-2">
+                Registrarse gratis <i class="bi bi-arrow-right" aria-hidden="true"></i>
+            </a>
+        </div>
+    </div>
+}

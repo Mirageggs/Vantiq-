@@ -1,0 +1,136 @@
+@model Pedido
+@using System.Linq
+@{
+    ViewData["Title"] = "Venta " + Model.CodigoPedido;
+    var permitidas = (byte[])ViewBag.Permitidas;
+}
+
+<div class="container-fluid py-4">
+    <div class="row g-4 admin-shell">
+        <div class="col-lg-2 d-none d-lg-block"><partial name="_AdminSidebar" /></div>
+
+        <div class="col-lg-10">
+            <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
+                <h1 class="font-display mb-0">
+                    Venta <span class="text-gold font-monospace">@Model.CodigoPedido</span>
+                    <span class="estado-pill estado-@(Model.EstadoPedido.NombreEstadoPedido.ToLower()) ms-2">
+                        @Model.EstadoPedido.NombreEstadoPedido
+                    </span>
+                </h1>
+                <a class="btn btn-outline-gold btn-sm" asp-action="Index">
+                    <i class="bi bi-arrow-left me-1" aria-hidden="true"></i>Volver
+                </a>
+            </div>
+
+            <div class="row g-3">
+                <div class="col-lg-7">
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h2 class="h6 font-display mb-3">Cliente y envío</h2>
+                            <p class="mb-1">
+                                @Model.Cliente.Nombres @Model.Cliente.Apellidos
+                                @if (Model.Usuario != null)
+                                {
+                                    <span class="badge-vq badge-gold ms-1">Gestionado por: @Model.Usuario.NombreUsuario</span>
+                                }
+                            </p>
+                            <p class="small text-muted-vq mb-1">
+                                <i class="bi bi-envelope me-1" aria-hidden="true"></i>@Model.Cliente.Email
+                              
+                            </p>
+                            @* Descomentar si agregas la columna Direccion a tu modelo Pedido o Cliente *@
+                            @* <p class="small text-muted-vq mb-1"><i class="bi bi-geo-alt me-1" aria-hidden="true"></i>@Model.DireccionEnvio</p> *@
+                            <p class="small text-muted-vq mb-0">
+                                <i class="bi bi-calendar3 me-1" aria-hidden="true"></i>@Model.FechaHoraPedido.ToString("dd/MM/yyyy HH:mm")
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-body">
+                            <h2 class="h6 font-display mb-3">Detalle</h2>
+                            <div class="table-responsive">
+                                <table class="table table-vq mb-2">
+                                    <thead><tr><th>SKU</th><th>Modelo</th><th>Cant.</th><th>P. unit.</th><th>Subtotal</th></tr></thead>
+                                    <tbody>
+                                        @foreach (var det in Model.Detalles)
+                                        {
+                                            <tr>
+                                                <td class="small font-monospace">@det.Reloj.CodigoSKU</td>
+                                                <td>@det.Reloj.ModeloReloj.NombreModelo</td>
+                                                <td>@det.Cantidad</td>
+                                                @* Se asume que tu DetallePedido maneja la propiedad Precio o similar *@
+                                                <td>@string.Format("S/ {0:N2}", det.PrecioUnitario)</td>
+                                                <td>@string.Format("S/ {0:N2}", det.PrecioUnitario * det.Cantidad)</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="text-end fw-bold">Total: <span class="precio">@string.Format("S/ {0:N2}", Model.Total)</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                @* Acciones según transiciones permitidas (IDs de ESTADO_PEDIDO) *@
+                <div class="col-lg-5">
+                    <div class="card">
+                        <div class="card-body">
+                            <h2 class="h6 font-display mb-3">Acciones</h2>
+
+                            @if (permitidas.Length == 0)
+                            {
+                                <p class="text-muted-vq small mb-0">Estado final: no admite más transiciones.</p>
+                            }
+
+                            @if (Array.Exists(permitidas, e => e == 2))
+                            {
+                                <form asp-action="CambiarEstado" method="post" class="mb-2">
+                                    <input type="hidden" name="idPedido" value="@Model.IdPedido" />
+                                    <input type="hidden" name="nuevoEstado" value="2" />
+                                    <button class="btn btn-gold w-100">
+                                        <i class="bi bi-cash-coin me-1" aria-hidden="true"></i> Pago verificado: marcar PAGADO
+                                    </button>
+                                </form>
+                            }
+
+                            @if (Array.Exists(permitidas, e => e == 2))
+                            {
+                                <form asp-action="CambiarEstado" method="post" class="mb-2">
+                                    <input type="hidden" name="idPedido" value="@Model.IdPedido" />
+                                    <input type="hidden" name="nuevoEstado" value="3" />
+                                    <button class="btn btn-gold w-100">
+                                        <i class="bi bi-truck me-1" aria-hidden="true"></i> Despachar: marcar ENVIADO
+                                    </button>
+                                </form>
+                            }
+
+                            @if (Array.Exists(permitidas, e => e == 2))
+                            {
+                                <form asp-action="CambiarEstado" method="post" class="mb-2">
+                                    <input type="hidden" name="idPedido" value="@Model.IdPedido" />
+                                    <input type="hidden" name="nuevoEstado" value="4" />
+                                    <button class="btn btn-gold w-100">
+                                        <i class="bi bi-patch-check me-1" aria-hidden="true"></i> Cliente recibió: marcar ENTREGADO
+                                    </button>
+                                </form>
+                            }
+
+                            @if (Array.Exists(permitidas, e => e == 2))
+                            {
+                                <form asp-action="CambiarEstado" method="post"
+                                      onsubmit="return confirm('Cancelar la venta repone el stock vía kardex. ¿Continuar?');">
+                                    <input type="hidden" name="idPedido" value="@Model.IdPedido" />
+                                    <input type="hidden" name="nuevoEstado" value="5" />
+                                    <button class="btn btn-outline-gold w-100 text-danger border-danger">
+                                        <i class="bi bi-x-circle me-1" aria-hidden="true"></i> Cancelar venta (repone stock)
+                                    </button>
+                                </form>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

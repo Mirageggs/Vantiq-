@@ -1,0 +1,27 @@
+@{
+    // Componente reutilizable: barra lateral del panel (Figma: AdminView sidebar).
+    // Resalta la opción activa según el controlador en curso.
+    var ctrl = (ViewContext.RouteData.Values["controller"]?.ToString() ?? "").ToLower();
+    string Activo(string c) => ctrl == c ? "activo" : "";
+}
+<aside class="admin-sidebar" aria-label="Navegación del panel">
+    <p class="eyebrow px-2 mb-3">Panel Admin</p>
+    <nav class="d-flex flex-column gap-1">
+        <a class="admin-side-link @Activo("dashboard")" asp-controller="Dashboard" asp-action="Index">
+            <i class="bi bi-speedometer2" aria-hidden="true"></i> Dashboard
+        </a>
+        <a class="admin-side-link @Activo("usuarios")" asp-controller="Usuarios" asp-action="Index">
+            <i class="bi bi-people" aria-hidden="true"></i> Usuarios
+        </a>
+        <a class="admin-side-link @Activo("inventario")" asp-controller="Inventario" asp-action="Index">
+            <i class="bi bi-box-seam" aria-hidden="true"></i> Inventario
+        </a>
+        <a class="admin-side-link @Activo("ventas")" asp-controller="Ventas" asp-action="Index">
+            <i class="bi bi-receipt" aria-hidden="true"></i> Ventas
+        </a>
+    </nav>
+    <hr class="my-3" />
+    <a class="admin-side-link" asp-controller="Catalogo" asp-action="Index">
+        <i class="bi bi-shop" aria-hidden="true"></i> Ir a la tienda
+    </a>
+</aside>

@@ -1,0 +1,49 @@
+@model LoginViewModel
+@{ ViewData["Title"] = "Iniciar sesión"; }
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5 col-xl-4">
+            <div class="card">
+                <div class="card-body p-4 p-lg-5">
+                    <div class="text-center mb-4">
+                        <span class="brand-vantiq d-inline-block">VANTIQ</span>
+                        <p class="text-muted-vq small mt-2 mb-0">Ingresa a tu cuenta</p>
+                    </div>
+
+                    @* Pestañas visuales Login/Registro (del AuthModal del Figma) *@
+                    <div class="d-flex gap-1 p-1 mb-4 rounded" style="background: var(--vq-bg-2);">
+                        <span class="auth-tab activa">Iniciar sesión</span>
+                        <a class="auth-tab" asp-action="Registro">Crear cuenta</a>
+                    </div>
+
+                    <form asp-action="Login" asp-route-returnUrl="@ViewBag.ReturnUrl" method="post" novalidate>
+                        <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
+
+                        <div class="mb-3">
+                            <label asp-for="Email" class="eyebrow d-block mb-1">Correo electrónico</label>
+                            <input asp-for="Email" class="form-control" placeholder="correo@@ejemplo.com"
+                                   autocomplete="email" />
+                            <span asp-validation-for="Email" class="text-danger small"></span>
+                        </div>
+                        <div class="mb-4">
+                            <label asp-for="Contrasenia" class="eyebrow d-block mb-1">Contraseña</label>
+                            <input asp-for="Contrasenia" class="form-control" placeholder="••••••••"
+                                   autocomplete="current-password" />
+                            <span asp-validation-for="Contrasenia" class="text-danger small"></span>
+                        </div>
+
+                        <button type="submit" class="btn btn-gold w-100 py-2">
+                            <i class="bi bi-box-arrow-in-right me-1" aria-hidden="true"></i> Ingresar
+                        </button>
+                    </form>
+
+                    <p class="text-center small text-muted-vq mt-4 mb-0">
+                        Demo admin: <span class="text-gold font-monospace">admin@@vantiq.pe</span>
+                        / <span class="font-monospace">Vantiq#2026</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

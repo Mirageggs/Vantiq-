@@ -1,0 +1,74 @@
+@model List<Usuario>
+@{
+    ViewData["Title"] = "Usuarios";
+    var idActual = int.Parse(User.Claims.First(c => c.Type == System.Security.Claims.ClaimTypes.NameIdentifier).Value);
+}
+
+<div class="container-fluid py-4">
+    <div class="row g-4 admin-shell">
+        <div class="col-lg-2 d-none d-lg-block"><partial name="_AdminSidebar" /></div>
+
+        <div class="col-lg-10">
+            <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
+                <div>
+                    <h1 class="font-display mb-1"><i class="bi bi-people text-gold me-2" aria-hidden="true"></i>Usuarios</h1>
+                    <p class="text-muted-vq small mb-0">Gestión de cuentas y roles (RBAC)</p>
+                </div>
+                <partial name="_BuscadorTabla" model="@("tablaUsuarios")" />
+            </div>
+
+            <div class="card">
+                <div class="table-responsive">
+                    <table class="table table-vq table-hover mb-0" id="tablaUsuarios">
+                        <thead>
+                            <tr><th>#</th><th>Usuario</th><th>Correo</th><th>Roles</th><th>Registro</th><th>Estado</th><th></th></tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var usuario in Model)
+                            {
+                                <tr>
+                                    <td class="text-muted-vq">@usuario.IdUsuario</td>
+                                    <td class="fw-semibold">@usuario.NombreUsuario</td>
+                                    <td class="small">@usuario.Email</td>
+                                    <td>
+                                        @foreach (var ur in usuario.Roles)
+                                        {
+                                            var esAdmin = ur.Rol.NombreRol == "Administrador";
+                                            <span class="badge-vq @(esAdmin ? "badge-gold" : "")"
+                                                  style="@(esAdmin ? "" : "background:var(--vq-secondary); color:var(--vq-muted);")">
+                                                @ur.Rol.NombreRol
+                                            </span>
+                                        }
+                                    </td>
+                                    <td class="small text-muted-vq">@usuario.FechaHoraRegistro.ToString("dd/MM/yyyy")</td>
+                                    <td>
+                                        <span class="estado-pill @(usuario.EstaActivo ? "estado-entregado" : "estado-cancelado")">
+                                            @(usuario.EstaActivo ? "Activo" : "Inactivo")
+                                        </span>
+                                    </td>
+                                    <td>
+                                        @if (usuario.IdUsuario != idActual)
+                                        {
+                                            <form asp-action="CambiarEstado" method="post">
+                                                <input type="hidden" name="id" value="@usuario.IdUsuario" />
+                                                <button class="btn btn-outline-gold btn-sm @(usuario.EstaActivo ? "text-danger" : "text-success")">
+                                                    @(usuario.EstaActivo ? "Desactivar" : "Activar")
+                                                </button>
+                                            </form>
+                                        }
+                                        else
+                                        {
+                                            <span class="small text-muted-vq">Tu cuenta</span>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts { <partial name="_FiltroTablaScript" /> }

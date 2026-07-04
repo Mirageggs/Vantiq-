@@ -1,0 +1,87 @@
+@model Reloj
+@{
+    ViewData["Title"] = "Kárdex " + Model.CodigoSKU;
+    var movimientos = (List<Kardex>)ViewBag.Movimientos;
+    var conceptos = (List<ConceptoKardex>)ViewBag.Conceptos;
+}
+
+<div class="container-fluid py-4">
+    <div class="row g-4 admin-shell">
+        <div class="col-lg-2 d-none d-lg-block"><partial name="_AdminSidebar" /></div>
+
+        <div class="col-lg-10">
+            <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
+                <h1 class="font-display mb-0">
+                    <i class="bi bi-journal-text text-gold me-2" aria-hidden="true"></i>Kárdex:
+                    <span class="text-gold font-monospace">@Model.CodigoSKU</span>
+                    <span class="fw-bold ms-2 @(Model.StockActual == 0 ? "stock-cero" : Model.StockActual <= 3 ? "stock-bajo" : "stock-ok")">Stock: @Model.StockActual</span>
+                </h1>
+                <a class="btn btn-outline-gold btn-sm" asp-action="Index"><i class="bi bi-arrow-left me-1" aria-hidden="true"></i>Inventario</a>
+            </div>
+
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h2 class="h6 font-display mb-3">Registrar movimiento manual</h2>
+                    <form asp-action="RegistrarMovimiento" method="post" class="row g-2 align-items-end">
+                        <input type="hidden" name="idReloj" value="@Model.IdReloj" />
+                        <div class="col-md-5">
+                            <label class="eyebrow d-block mb-1">Concepto</label>
+                            <select name="idConcepto" class="form-select">
+                                @foreach (var concepto in conceptos)
+                                {
+                                    <option value="@concepto.IdConcepto">@concepto.NombreConcepto (@concepto.TipoMovimiento)</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="eyebrow d-block mb-1">Cantidad</label>
+                            <input type="number" name="cantidad" class="form-control" min="1" value="1" required />
+                        </div>
+                        <div class="col-md-4">
+                            <button type="submit" class="btn btn-gold w-100"><i class="bi bi-plus-lg me-1" aria-hidden="true"></i>Registrar</button>
+                        </div>
+                    </form>
+                    <p class="small text-muted-vq mb-0 mt-2">La <strong>Venta</strong> y la <strong>Devolución</strong> las registra el sistema automáticamente.</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="table-responsive">
+                    <table class="table table-vq table-hover mb-0">
+                        <thead>
+                            <tr><th>Fecha y hora</th><th>Concepto</th><th>Tipo</th><th>Cantidad</th><th>Stock result.</th><th>Registró</th><th>Venta</th></tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var mov in movimientos)
+                            {
+                                var esEntrada = mov.Concepto.TipoMovimiento == TipoMovimiento.ENTRADA;
+                                <tr>
+                                    <td class="small text-muted-vq">@mov.FechaHoraMovimiento.ToString("dd/MM/yyyy HH:mm")</td>
+                                    <td class="small">@mov.Concepto.NombreConcepto</td>
+                                    <td><span class="estado-pill @(esEntrada ? "estado-entregado" : "estado-cancelado")">@mov.Concepto.TipoMovimiento</span></td>
+                                    <td class="fw-semibold @(esEntrada ? "stock-ok" : "stock-cero")">@(esEntrada ? "+" : "−")@mov.Cantidad</td>
+                                    <td>@mov.StockResultante</td>
+                                    <td class="small text-muted-vq">@mov.Usuario.NombreUsuario</td>
+                                    <td class="small font-monospace">
+                                        @if (mov.IdPedido != null)
+                                        {
+                                            @* Si en tu controlador de Kardex haces .Include(k => k.Pedido), lo ideal es usar esto: *@
+                                            @* @mov.Pedido.CodigoPedido *@
+
+                                            @* Si NO incluyes la tabla Pedido y solo tienes el ID, forzamos el formato visualmente: *@
+                                            @($"VQ-{mov.IdPedido.Value:D6}")
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted-vq">—</span>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

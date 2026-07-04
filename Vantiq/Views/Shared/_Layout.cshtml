@@ -1,50 +1,232 @@
-﻿<!DOCTYPE html>
-<html lang="en">
+@inject Vantiq.Data.VantiqDbContext Db
+@{
+    // Categorías para la barra de navegación (sección "Colección" del Figma)
+    var categorias = Db.Categorias.Where(c => c.EstaActiva).OrderBy(c => c.IdCategoria).ToList();
+
+    // Menú del administrador resuelto por RBAC: ROL_OPCION_MENU -> OPCION_MENU
+    var rolesUsuario = User.Claims
+        .Where(c => c.Type == System.Security.Claims.ClaimTypes.Role)
+        .Select(c => c.Value).ToList();
+    var menuAdmin = rolesUsuario.Count == 0
+        ? new List<OpcionMenu>()
+        : Db.RolesOpcionMenu
+            .Where(ro => rolesUsuario.Contains(ro.Rol.NombreRol) && ro.OpcionMenu.EstaActiva)
+            .Select(ro => ro.OpcionMenu).Distinct()
+            .OrderBy(o => o.IdOpcionMenu).ToList();
+
+    var carritoCount = Context.Session.GetInt32("CARRITO_COUNT") ?? 0;
+    var whatsapp = Db.Negocios.Select(n => n.NumCelular).FirstOrDefault() ?? "51999999999";
+    var idCatActual = Context.Request.Query["idCategoria"].ToString();
+}
+<!DOCTYPE html>
+<html lang="es" data-bs-theme="dark">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Vantiq</title>
-    <script type="importmap"></script>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/Vantiq.styles.css" asp-append-version="true" />
+    <title>@ViewData["Title"] · VANTIQ</title>
+    <meta name="description" content="VANTIQ — Relojes de autor. El tiempo, redefinido." />
+
+    <!-- Tipografía del diseño (Figma): Playfair Display para titulares, Inter para texto -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet" />
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
+    <link href="~/css/vantiq.css" rel="stylesheet" />
 </head>
-<body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Vantiq</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
+<body class="d-flex flex-column min-vh-100">
+
+    <!-- ══ Barra superior utilitaria ══ -->
+    <div class="topbar text-center py-1">
+        <i class="bi bi-truck me-1" aria-hidden="true"></i> Envíos a todo el Perú
+        <span class="mx-2 text-gold">·</span>
+        <i class="bi bi-patch-check me-1" aria-hidden="true"></i> Autenticidad certificada
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2026 - Vantiq - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+    <!-- ══ Cabecera: logo + buscador + cuenta + carrito (NavBar del Figma) ══ -->
+    <header class="header-vantiq py-2">
+        <div class="container d-flex flex-wrap align-items-center gap-3">
+            <a class="brand-vantiq d-flex align-items-baseline gap-1" asp-controller="Catalogo" asp-action="Index"
+               aria-label="VANTIQ, ir al inicio">
+                VANTIQ<sup>®</sup>
+            </a>
+
+            <form class="flex-grow-1 search-vq" asp-controller="Catalogo" asp-action="Index" method="get" role="search">
+                <div class="input-group">
+                    <span class="input-group-text bg-transparent border-vq text-muted-vq">
+                        <i class="bi bi-search" aria-hidden="true"></i>
+                    </span>
+                    <input type="search" name="q" class="form-control border-start-0"
+                           placeholder="Buscar reloj: modelo, SKU, categoría…"
+                           value="@Context.Request.Query["q"]" aria-label="Buscar en el catálogo" />
+                </div>
+            </form>
+
+            <div class="d-flex align-items-center gap-2">
+                <div class="dropdown">
+                    <button class="btn btn-ghost dropdown-toggle d-flex align-items-center gap-1" type="button"
+                            data-bs-toggle="dropdown" aria-expanded="false" aria-label="Menú de cuenta">
+                        <i class="bi bi-person-circle fs-5" aria-hidden="true"></i>
+                        <span class="d-none d-sm-inline small">
+                            @(User.Identity?.IsAuthenticated == true ? User.Identity!.Name : "Mi cuenta")
+                        </span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        @if (User.Identity?.IsAuthenticated == true)
+                        {
+                            <li>
+                                <a class="dropdown-item" asp-controller="Ventas" asp-action="MisCompras">
+                                    <i class="bi bi-bag-check me-2" aria-hidden="true"></i>Mis compras
+                                </a>
+                            </li>
+                            @if (User.IsInRole("Administrador"))
+                            {
+                                <li>
+                                    <a class="dropdown-item" asp-controller="Dashboard" asp-action="Index">
+                                        <i class="bi bi-speedometer2 me-2" aria-hidden="true"></i>Panel de administración
+                                    </a>
+                                </li>
+                            }
+                            <li><hr class="dropdown-divider" /></li>
+                            <li>
+                                <form asp-controller="Acceso" asp-action="Salir" method="post" class="px-3 py-1">
+                                    <button type="submit" class="btn btn-ghost p-0 text-danger d-flex align-items-center">
+                                        <i class="bi bi-box-arrow-right me-2" aria-hidden="true"></i>Cerrar sesión
+                                    </button>
+                                </form>
+                            </li>
+                        }
+                        else
+                        {
+                            <li>
+                                <a class="dropdown-item" asp-controller="Acceso" asp-action="Login">
+                                    <i class="bi bi-box-arrow-in-right me-2" aria-hidden="true"></i>Iniciar sesión
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" asp-controller="Acceso" asp-action="Registro">
+                                    <i class="bi bi-person-plus me-2" aria-hidden="true"></i>Crear cuenta
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+
+                <a class="btn btn-ghost position-relative" asp-controller="Carrito" asp-action="Index"
+                   aria-label="Ver carrito">
+                    <i class="bi bi-cart3 fs-5" aria-hidden="true"></i>
+                    @if (carritoCount > 0)
+                    {
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-gold"
+                              style="font-size:.6rem;">
+                            @carritoCount
+                            <span class="visually-hidden">artículos en el carrito</span>
+                        </span>
+                    }
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- ══ Navegación de categorías (Colecciones del Figma) ══ -->
+    <nav class="nav-categorias" aria-label="Categorías de relojes">
+        <div class="container d-flex flex-wrap gap-2 py-2">
+            <a class="cat-link @(string.IsNullOrEmpty(idCatActual) ? "activo" : "")"
+               asp-controller="Catalogo" asp-action="Index">Todos</a>
+            @foreach (var cat in categorias)
+            {
+                <a class="cat-link @(idCatActual == cat.IdCategoria.ToString() ? "activo" : "")"
+                   asp-controller="Catalogo" asp-action="Index" asp-route-idCategoria="@cat.IdCategoria">
+                    @cat.NombreCategoria
+                </a>
+            }
+        </div>
+    </nav>
+
+    <!-- ══ Menú del administrador (RBAC · estructura exacta: USUARIOS | INVENTARIO | VENTAS) ══ -->
+    @if (menuAdmin.Any())
+    {
+        <nav class="nav-admin" aria-label="Menú de administración">
+            <div class="container d-flex flex-wrap align-items-center gap-3 py-1">
+                <a class="admin-brand" asp-controller="Dashboard" asp-action="Index">
+                    <i class="bi bi-speedometer2 me-1" aria-hidden="true"></i>PANEL
+                </a>
+                @foreach (var opcion in menuAdmin)
+                {
+                    <a class="admin-link" href="@opcion.UrlDestino">@opcion.NombreOpcionMenu</a>
+                }
+            </div>
+        </nav>
+    }
+
+    <main class="flex-grow-1 pb-5" id="contenido">
+        @RenderBody()
+    </main>
+
+    <!-- ══ Pie de página ══ -->
+    <footer class="footer-vantiq mt-auto py-4">
+        <div class="container text-center">
+            <span class="brand-vantiq d-inline-block">VANTIQ</span>
+            <p class="small mt-2 mb-2 text-uppercase tracking-wide" style="letter-spacing:.2em;">
+                El tiempo, redefinido · © 2026
+            </p>
+            <p class="small mb-0">
+                <i class="bi bi-whatsapp me-1" aria-hidden="true"></i>+@whatsapp
+                <span class="mx-2">·</span> Proyecto académico DIARS 2026-1
+            </p>
         </div>
     </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <!-- Botón flotante de WhatsApp -->
+    <a class="whatsapp-float" target="_blank" rel="noopener"
+       href="https://wa.me/@(whatsapp)?text=Hola%20VANTIQ,%20necesito%20asesor%C3%ADa%20sobre%20un%20reloj"
+       aria-label="Contactar por WhatsApp">
+        <i class="bi bi-whatsapp" aria-hidden="true"></i>
+    </a>
+
+    <!-- ══ Sistema de notificaciones (toasts): renderiza TempData ok/error/warn ══ -->
+    <div class="toast-container-vq" aria-live="polite" aria-atomic="true">
+        @if (TempData["ok"] != null)
+        {
+            <div class="toast-vq ok d-flex align-items-start gap-2" role="status">
+                <i class="bi bi-check-circle-fill text-success mt-1" aria-hidden="true"></i>
+                <div class="flex-grow-1 small">@TempData["ok"]</div>
+                <button type="button" class="btn-ghost p-0" onclick="this.parentElement.remove()" aria-label="Cerrar">
+                    <i class="bi bi-x"></i>
+                </button>
+            </div>
+        }
+        @if (TempData["error"] != null)
+        {
+            <div class="toast-vq error d-flex align-items-start gap-2" role="alert">
+                <i class="bi bi-exclamation-triangle-fill text-danger mt-1" aria-hidden="true"></i>
+                <div class="flex-grow-1 small">@TempData["error"]</div>
+                <button type="button" class="btn-ghost p-0" onclick="this.parentElement.remove()" aria-label="Cerrar">
+                    <i class="bi bi-x"></i>
+                </button>
+            </div>
+        }
+        @if (TempData["warn"] != null)
+        {
+            <div class="toast-vq warn d-flex align-items-start gap-2" role="alert">
+                <i class="bi bi-info-circle-fill text-warning mt-1" aria-hidden="true"></i>
+                <div class="flex-grow-1 small">@TempData["warn"]</div>
+                <button type="button" class="btn-ghost p-0" onclick="this.parentElement.remove()" aria-label="Cerrar">
+                    <i class="bi bi-x"></i>
+                </button>
+            </div>
+        }
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Auto-descartar los toasts tras 4.5 s (feedback no intrusivo)
+        setTimeout(() => document.querySelectorAll('.toast-vq').forEach(t => {
+            t.style.transition = 'opacity .4s'; t.style.opacity = '0';
+            setTimeout(() => t.remove(), 400);
+        }), 4500);
+    </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

@@ -1,0 +1,66 @@
+@{
+    ViewData["Title"] = "Nuevo reloj";
+    var modelos = (List<ModeloReloj>)ViewBag.Modelos;
+    var marcas = (List<Marca>)ViewBag.Marcas;
+}
+
+<div class="container-fluid py-4">
+    <div class="row g-4 admin-shell">
+        <div class="col-lg-2 d-none d-lg-block"><partial name="_AdminSidebar" /></div>
+
+        <div class="col-lg-10">
+            <h1 class="font-display mb-4"><i class="bi bi-plus-circle text-gold me-2" aria-hidden="true"></i>Registrar nuevo reloj</h1>
+
+            <div class="card">
+                <div class="card-body p-4">
+                    <form asp-action="Crear" method="post" class="row g-3">
+                        <div class="col-md-5">
+                            <label class="eyebrow d-block mb-1">Modelo (con su categoría)</label>
+                            <select name="idModeloReloj" class="form-select" required>
+                                @foreach (var modelo in modelos)
+                                {
+                                    <option value="@modelo.IdModeloReloj">@modelo.NombreModelo — @modelo.Categoria.NombreCategoria</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="eyebrow d-block mb-1">Marca</label>
+                            <select name="idMarca" class="form-select" required>
+                                @foreach (var marca in marcas)
+                                {
+                                    <option value="@marca.IdMarca">@marca.NombreMarca</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="eyebrow d-block mb-1">N° de orden</label>
+                            <input type="number" name="numOrden" class="form-control" min="1" value="1" required />
+                            <div class="form-text text-muted-vq">SKU: MARCA-MODELO-NNN</div>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="eyebrow d-block mb-1">Precio (S/)</label>
+                            <input type="number" name="precio" class="form-control" min="0.01" step="0.01" required />
+                        </div>
+                        <div class="col-md-3">
+                            <label class="eyebrow d-block mb-1">Stock inicial</label>
+                            <input type="number" name="stockInicial" class="form-control" min="0" value="0" required />
+                            <div class="form-text text-muted-vq">Genera kárdex de ENTRADA</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="eyebrow d-block mb-1">URL de la imagen</label>
+                            <input type="text" name="urlImagen" class="form-control" placeholder="https://..." required />
+                        </div>
+                        <div class="col-12">
+                            <label class="eyebrow d-block mb-1">Descripción (ficha técnica)</label>
+                            <textarea name="descripcion" class="form-control" rows="2" placeholder="Diámetro, cristal, movimiento, correa..."></textarea>
+                        </div>
+                        <div class="col-12 d-flex gap-2">
+                            <button type="submit" class="btn btn-gold"><i class="bi bi-save me-1" aria-hidden="true"></i>Guardar</button>
+                            <a class="btn btn-outline-gold" asp-action="Index">Cancelar</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

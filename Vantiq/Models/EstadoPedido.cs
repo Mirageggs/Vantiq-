@@ -16,8 +16,11 @@ namespace Vantiq.Models
         [StringLength(150)]
         public string? Descripcion { get; set; } = null!;
 
+
         public bool EstaActivo { get; set; } = true;
 
         public ICollection<Pedido> Pedidos { get; set; } = new List<Pedido>();
+
+       
     }
 }

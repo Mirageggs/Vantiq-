@@ -1,0 +1,55 @@
+@model List<Reloj>
+@{ ViewData["Title"] = "Inventario"; }
+
+<div class="container-fluid py-4">
+    <div class="row g-4 admin-shell">
+        <div class="col-lg-2 d-none d-lg-block"><partial name="_AdminSidebar" /></div>
+
+        <div class="col-lg-10">
+            <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
+                <div>
+                    <h1 class="font-display mb-1"><i class="bi bi-box-seam text-gold me-2" aria-hidden="true"></i>Inventario</h1>
+                    <p class="text-muted-vq small mb-0">Catálogo de relojes · el stock solo cambia vía kárdex</p>
+                </div>
+                <div class="d-flex gap-2">
+                    <partial name="_BuscadorTabla" model="@("tablaInventario")" />
+                    <a class="btn btn-gold" asp-action="Crear"><i class="bi bi-plus-lg me-1" aria-hidden="true"></i>Nuevo reloj</a>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="table-responsive">
+                    <table class="table table-vq table-hover mb-0" id="tablaInventario">
+                        <thead>
+                            <tr><th></th><th>SKU</th><th>Modelo / Marca</th><th>Categoría</th><th>Precio</th><th>Stock</th><th>Estado</th><th>Acciones</th></tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var reloj in Model)
+                            {
+                                <tr>
+                                    <td style="width:56px;"><img src="@reloj.UrlImagen" width="44" height="44" class="rounded" style="object-fit:cover;" alt="@reloj.CodigoSKU" /></td>
+                                    <td class="small font-monospace fw-semibold">@reloj.CodigoSKU</td>
+                                    <td>@reloj.ModeloReloj.NombreModelo <span class="text-muted-vq small">/ @reloj.Marca.NombreMarca</span></td>
+                                    <td class="small">@reloj.ModeloReloj.Categoria.NombreCategoria</td>
+                                    <td class="fw-semibold">@Formato.Soles(reloj.Precio)</td>
+                                    <td><span class="fw-bold @(reloj.StockActual == 0 ? "stock-cero" : reloj.StockActual <= 3 ? "stock-bajo" : "stock-ok")">@reloj.StockActual</span></td>
+                                    <td class="small text-muted-vq">@reloj.EstadoReloj.NombreEstadoReloj</td>
+                                    <td>
+                                        <a class="btn btn-outline-gold btn-sm" asp-action="Editar" asp-route-id="@reloj.IdReloj" aria-label="Editar @reloj.CodigoSKU">
+                                            <i class="bi bi-pencil" aria-hidden="true"></i>
+                                        </a>
+                                        <a class="btn btn-outline-gold btn-sm" asp-action="Kardex" asp-route-id="@reloj.IdReloj">
+                                            <i class="bi bi-journal-text" aria-hidden="true"></i> Kárdex
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts { <partial name="_FiltroTablaScript" /> }

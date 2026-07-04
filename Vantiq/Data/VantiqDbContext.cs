@@ -40,8 +40,6 @@ namespace Vantiq.Data
 
             // =================================================================
             // 1. CATALOGOS SEMBRADOS: claves sin IDENTITY (valores fijos)
-            //    Los catalogos byte/short se siembran con IDs conocidos por el
-            //    codigo (ej. 1 = Pendiente), por eso no se autogeneran.
             // =================================================================
             modelBuilder.Entity<Negocio>().Property(x => x.IdNegocio).ValueGeneratedNever();
             modelBuilder.Entity<Rol>().Property(x => x.IdRol).ValueGeneratedNever();
@@ -66,19 +64,18 @@ namespace Vantiq.Data
             modelBuilder.Entity<Pedido>().HasIndex(x => x.CodigoPedido).IsUnique();
             modelBuilder.Entity<ConceptoKardex>().HasIndex(x => x.NombreConcepto).IsUnique();
 
-            // Unicos compuestos: evitan duplicar la misma asignacion o linea
+            // Unicos compuestos
             modelBuilder.Entity<UsuarioRol>().HasIndex(x => new { x.IdUsuario, x.IdRol }).IsUnique();
             modelBuilder.Entity<RolOpcionMenu>().HasIndex(x => new { x.IdRol, x.IdOpcionMenu }).IsUnique();
 
-            // Unico filtrado: muchos CLIENTE invitados con IdUsuario NULL,
-            // pero como maximo un CLIENTE por cada USUARIO registrado.
+            // Unico filtrado para Clientes de tipo Usuario vs Invitados
             modelBuilder.Entity<Cliente>()
                 .HasIndex(x => x.IdUsuario)
                 .IsUnique()
                 .HasFilter("[IdUsuario] IS NOT NULL");
 
             // =================================================================
-            // 3. RELACIONES 1 : 0..1 (Fluent API define el lado dependiente)
+            // 3. RELACIONES 1 : 0..1
             // =================================================================
             modelBuilder.Entity<Cliente>()
                 .HasOne(c => c.Usuario)
@@ -86,8 +83,7 @@ namespace Vantiq.Data
                 .HasForeignKey<Cliente>(c => c.IdUsuario);
 
             // =================================================================
-            // 4. CONVERSION DE ENUM: TipoMovimiento se guarda como texto
-            //    ('ENTRADA' / 'SALIDA'), legible en la BD y en reportes.
+            // 4. CONVERSION DE ENUM
             // =================================================================
             modelBuilder.Entity<ConceptoKardex>()
                 .Property(x => x.TipoMovimiento)
@@ -95,8 +91,7 @@ namespace Vantiq.Data
                 .HasMaxLength(10);
 
             // =================================================================
-            // 5. VALORES POR DEFECTO EN SERVIDOR para fechas inmutables:
-            //    si la aplicacion no envia valor, SQL Server registra GETDATE().
+            // 5. VALORES POR DEFECTO EN SERVIDOR
             // =================================================================
             modelBuilder.Entity<Usuario>().Property(x => x.FechaHoraRegistro).HasDefaultValueSql("GETDATE()");
             modelBuilder.Entity<Usuario>().Property(x => x.FechaHoraModificacion).HasDefaultValueSql("GETDATE()");
@@ -106,11 +101,7 @@ namespace Vantiq.Data
             modelBuilder.Entity<Kardex>().Property(x => x.FechaHoraMovimiento).HasDefaultValueSql("GETDATE()");
 
             // =================================================================
-            // 6. ELIMINACION LOGICA => ninguna FK borra en cascada.
-            //    El sistema desactiva registros (estaActivo = false); ademas,
-            //    Restrict evita el error clasico de SQL Server por "multiple
-            //    cascade paths" que este esquema produciria (KARDEX/PEDIDO/
-            //    CLIENTE/USUARIO comparten rutas de borrado).
+            // 6. ELIMINACION LOGICA / RESTRICCION DE CASCADA
             // =================================================================
             foreach (var fk in modelBuilder.Model.GetEntityTypes()
                                                  .SelectMany(t => t.GetForeignKeys())
@@ -132,8 +123,8 @@ namespace Vantiq.Data
             {
                 IdNegocio = 1,
                 NombreNegocio = "VANTIQ Peru",
-                RucNegocio = null,          // completar con el RUC real
-                NumCelular = null,          // completar con el WhatsApp del negocio
+                RucNegocio = null,
+                NumCelular = null,
                 Direccion = null
             });
 
@@ -143,7 +134,7 @@ namespace Vantiq.Data
                 new Rol { IdRol = 2, NombreRol = "Cliente", Descripcion = "Carrito persistente entre sesiones e historial de compras", EstaActivo = true },
                 new Rol { IdRol = 3, NombreRol = "Administrador", Descripcion = "Control total: usuarios, inventario, ventas y dashboards", EstaActivo = true });
 
-            // ----- Menu del Administrador (estructura EXACTA del requerimiento) -----
+            // ----- Menu del Administrador -----
             modelBuilder.Entity<OpcionMenu>().HasData(
                 new OpcionMenu { IdOpcionMenu = 1, NombreOpcionMenu = "USUARIOS", UrlDestino = "/Usuarios", Orden = 1, EstaActiva = true },
                 new OpcionMenu { IdOpcionMenu = 2, NombreOpcionMenu = "INVENTARIO", UrlDestino = "/Inventario", Orden = 2, EstaActiva = true },
@@ -154,7 +145,7 @@ namespace Vantiq.Data
                 new RolOpcionMenu { IdRolOpcionMenu = 2, IdRol = 3, IdOpcionMenu = 2 },
                 new RolOpcionMenu { IdRolOpcionMenu = 3, IdRol = 3, IdOpcionMenu = 3 });
 
-            // ----- Categorias del catalogo (elicitacion del negocio) -----
+            // ----- Categorias del catalogo -----
             modelBuilder.Entity<Categoria>().HasData(
                 new Categoria { IdCategoria = 1, NombreCategoria = "Automatico", Descripcion = "Relojes de cuerda automatica", EstaActiva = true },
                 new Categoria { IdCategoria = 2, NombreCategoria = "GMT", Descripcion = "Relojes con segundo huso horario", EstaActiva = true },
@@ -170,9 +161,9 @@ namespace Vantiq.Data
                 new EstadoReloj { IdEstadoReloj = 2, NombreEstadoReloj = "Agotado", Descripcion = "Sin stock; visible pero no comprable", EstaActivo = true },
                 new EstadoReloj { IdEstadoReloj = 3, NombreEstadoReloj = "Descontinuado", Descripcion = "Retirado del catalogo publico", EstaActivo = true });
 
-           
+            
 
-            // ----- Estados del pedido (diagrama de estados de la Fase 2) -----
+            // ----- Estados del pedido -----
             modelBuilder.Entity<EstadoPedido>().HasData(
                 new EstadoPedido { IdEstadoPedido = 1, NombreEstadoPedido = "Pendiente", Descripcion = "Registrado; en espera de verificacion del pago", EstaActivo = true },
                 new EstadoPedido { IdEstadoPedido = 2, NombreEstadoPedido = "Pagado", Descripcion = "Pago verificado por el administrador", EstaActivo = true },
@@ -180,19 +171,15 @@ namespace Vantiq.Data
                 new EstadoPedido { IdEstadoPedido = 4, NombreEstadoPedido = "Entregado", Descripcion = "Recibido por el cliente; cierra el ciclo", EstaActivo = true },
                 new EstadoPedido { IdEstadoPedido = 5, NombreEstadoPedido = "Cancelado", Descripcion = "Anulado; repone stock via kardex de entrada", EstaActivo = true });
 
-  
-
             // ----- Conceptos de kardex -----
             modelBuilder.Entity<ConceptoKardex>().HasData(
                 new ConceptoKardex { IdConcepto = 1, NombreConcepto = "Compra a proveedor", TipoMovimiento = TipoMovimiento.ENTRADA, Descripcion = "Ingreso de mercaderia nueva", EstaActivo = true },
-                new ConceptoKardex { IdConcepto = 2, NombreConcepto = "Venta", TipoMovimiento = TipoMovimiento.SALIDA, Descripcion = "Salida por pedido confirmado", EstaActivo = true },
+                new ConceptoKardex { IdConcepto = 2, NombreConcepto = "Venta", TipoMovimiento = TipoMovimiento.SALIDA, Descripcion = "Salida por pedido confirmed", EstaActivo = true },
                 new ConceptoKardex { IdConcepto = 3, NombreConcepto = "Devolucion de cliente", TipoMovimiento = TipoMovimiento.ENTRADA, Descripcion = "Reingreso por pedido cancelado o devuelto", EstaActivo = true },
                 new ConceptoKardex { IdConcepto = 4, NombreConcepto = "Ajuste positivo de inventario", TipoMovimiento = TipoMovimiento.ENTRADA, Descripcion = "Correccion por conteo fisico", EstaActivo = true },
                 new ConceptoKardex { IdConcepto = 5, NombreConcepto = "Ajuste negativo de inventario", TipoMovimiento = TipoMovimiento.SALIDA, Descripcion = "Correccion por merma o dano", EstaActivo = true });
 
             // ----- Usuario administrador inicial -----
-            // Credenciales de arranque: admin / Vantiq#2026  (cambiar tras el primer login)
-            // El hash es BCrypt real ($2b$, costo 11), verificable con BCrypt.Net-Next.
             modelBuilder.Entity<Usuario>().HasData(new Usuario
             {
                 IdUsuario = 1,

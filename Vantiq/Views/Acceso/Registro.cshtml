@@ -1,0 +1,53 @@
+@model RegistroViewModel
+@{ ViewData["Title"] = "Crear cuenta"; }
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-7 col-lg-6 col-xl-5">
+            <div class="card">
+                <div class="card-body p-4 p-lg-5">
+                    <div class="text-center mb-4">
+                        <span class="brand-vantiq d-inline-block">VANTIQ</span>
+                        <p class="text-muted-vq small mt-2 mb-0">Crea tu cuenta de cliente</p>
+                    </div>
+
+                    <div class="d-flex gap-1 p-1 mb-4 rounded" style="background: var(--vq-bg-2);">
+                        <a class="auth-tab" asp-action="Login">Iniciar sesión</a>
+                        <span class="auth-tab activa">Crear cuenta</span>
+                    </div>
+
+                    <form asp-action="Registro" method="post" novalidate>
+                        <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
+
+                        <div class="mb-3">
+                            <label asp-for="NombreUsuario" class="eyebrow d-block mb-1">Nombre de usuario</label>
+                            <input asp-for="NombreUsuario" class="form-control" placeholder="Tu nombre" autocomplete="username" />
+                            <span asp-validation-for="NombreUsuario" class="text-danger small"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="Email" class="eyebrow d-block mb-1">Correo electrónico</label>
+                            <input asp-for="Email" class="form-control" placeholder="correo@@ejemplo.com" autocomplete="email" />
+                            <span asp-validation-for="Email" class="text-danger small"></span>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6 mb-3">
+                                <label asp-for="Contrasenia" class="eyebrow d-block mb-1">Contraseña</label>
+                                <input asp-for="Contrasenia" class="form-control" placeholder="••••••••" autocomplete="new-password" />
+                                <span asp-validation-for="Contrasenia" class="text-danger small"></span>
+                            </div>
+                            <div class="col-sm-6 mb-4">
+                                <label asp-for="ConfirmarContrasenia" class="eyebrow d-block mb-1">Confirmar</label>
+                                <input asp-for="ConfirmarContrasenia" class="form-control" placeholder="••••••••" autocomplete="new-password" />
+                                <span asp-validation-for="ConfirmarContrasenia" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-gold w-100 py-2">
+                            <i class="bi bi-person-plus me-1" aria-hidden="true"></i> Crear cuenta
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

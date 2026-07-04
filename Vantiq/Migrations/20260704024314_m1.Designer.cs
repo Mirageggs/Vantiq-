@@ -12,7 +12,7 @@ using Vantiq.Data;
 namespace Vantiq.Migrations
 {
     [DbContext(typeof(VantiqDbContext))]
-    [Migration("20260704011552_m1")]
+    [Migration("20260704024314_m1")]
     partial class m1
     {
         /// <inheritdoc />
@@ -155,7 +155,7 @@ namespace Vantiq.Migrations
                         new
                         {
                             IdConcepto = (byte)2,
-                            Descripcion = "Salida por pedido confirmado",
+                            Descripcion = "Salida por pedido confirmed",
                             EstaActivo = true,
                             NombreConcepto = "Venta",
                             TipoMovimiento = "SALIDA"
@@ -193,6 +193,9 @@ namespace Vantiq.Migrations
                         .HasColumnType("decimal(20,0)");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<decimal>("IdDetallePedido"));
+
+                    b.Property<long>("Cantidad")
+                        .HasColumnType("bigint");
 
                     b.Property<long>("IdPedido")
                         .HasColumnType("bigint");
@@ -566,7 +569,7 @@ namespace Vantiq.Migrations
 
                     b.HasIndex("IdCliente");
 
-                    b.HasIndex("IdMetodoPago");
+                    b.HasIndex("IdEstadoPedido");
 
                     b.HasIndex("IdUsuario");
 
@@ -900,7 +903,7 @@ namespace Vantiq.Migrations
 
                     b.HasOne("Vantiq.Models.EstadoPedido", "EstadoPedido")
                         .WithMany("Pedidos")
-                        .HasForeignKey("IdMetodoPago")
+                        .HasForeignKey("IdEstadoPedido")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 

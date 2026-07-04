@@ -309,8 +309,8 @@ namespace Vantiq.Migrations
                         principalColumn: "IdCliente",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_PEDIDO_ESTADO_PEDIDO_IdMetodoPago",
-                        column: x => x.IdMetodoPago,
+                        name: "FK_PEDIDO_ESTADO_PEDIDO_IdEstadoPedido",
+                        column: x => x.IdEstadoPedido,
                         principalTable: "ESTADO_PEDIDO",
                         principalColumn: "IdEstadoPedido",
                         onDelete: ReferentialAction.Restrict);
@@ -330,7 +330,8 @@ namespace Vantiq.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     IdPedido = table.Column<long>(type: "bigint", nullable: false),
                     IdReloj = table.Column<long>(type: "bigint", nullable: false),
-                    PrecioUnitario = table.Column<decimal>(type: "decimal(10,2)", precision: 10, scale: 2, nullable: false)
+                    PrecioUnitario = table.Column<decimal>(type: "decimal(10,2)", precision: 10, scale: 2, nullable: false),
+                    Cantidad = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -408,7 +409,7 @@ namespace Vantiq.Migrations
                 values: new object[,]
                 {
                     { (byte)1, "Ingreso de mercaderia nueva", true, "Compra a proveedor", "ENTRADA" },
-                    { (byte)2, "Salida por pedido confirmado", true, "Venta", "SALIDA" },
+                    { (byte)2, "Salida por pedido confirmed", true, "Venta", "SALIDA" },
                     { (byte)3, "Reingreso por pedido cancelado o devuelto", true, "Devolucion de cliente", "ENTRADA" },
                     { (byte)4, "Correccion por conteo fisico", true, "Ajuste positivo de inventario", "ENTRADA" },
                     { (byte)5, "Correccion por merma o dano", true, "Ajuste negativo de inventario", "SALIDA" }
@@ -582,9 +583,9 @@ namespace Vantiq.Migrations
                 column: "IdCliente");
 
             migrationBuilder.CreateIndex(
-                name: "IX_PEDIDO_IdMetodoPago",
+                name: "IX_PEDIDO_IdEstadoPedido",
                 table: "PEDIDO",
-                column: "IdMetodoPago");
+                column: "IdEstadoPedido");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PEDIDO_IdUsuario",

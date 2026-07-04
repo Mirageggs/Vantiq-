@@ -1,0 +1,9 @@
+@* Búsqueda en tiempo real: oculta filas que no contienen el texto. Reutilizable. *@
+<script>
+    function filtrarTabla(idTabla, texto) {
+        const t = (texto || "").toLowerCase();
+        document.querySelectorAll('#' + idTabla + ' tbody tr').forEach(fila => {
+            fila.style.display = fila.textContent.toLowerCase().includes(t) ? '' : 'none';
+        });
+    }
+</script>

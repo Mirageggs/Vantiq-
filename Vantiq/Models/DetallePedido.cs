@@ -19,9 +19,10 @@ namespace Vantiq.Models
         public decimal PrecioUnitario { get; set; }             // precio historico al vender
 
         [ForeignKey(nameof(IdPedido))]
-        public Pedido Pedido { get; set; } = null!;
+        public Pedido? Pedido { get; set; } = null!;
 
         [ForeignKey(nameof(IdReloj))]
         public Reloj Reloj { get; set; } = null!;
+        public uint Cantidad { get; internal set; }
     }
 }

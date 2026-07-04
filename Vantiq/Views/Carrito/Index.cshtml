@@ -1,0 +1,78 @@
+@model List<ItemCarrito>
+@{ ViewData["Title"] = "Mi carrito"; decimal total = ViewBag.Total; }
+
+<div class="container py-4">
+    <h1 class="font-display mb-4"><i class="bi bi-cart3 text-gold me-2" aria-hidden="true"></i>Mi carrito</h1>
+
+    @if (Model.Count == 0)
+    {
+        <div class="text-center py-5 text-muted-vq">
+            <i class="bi bi-cart-x d-block mb-3" style="font-size:3rem; opacity:.3;" aria-hidden="true"></i>
+            <p>Tu carrito está vacío.</p>
+            <a class="btn btn-gold" asp-controller="Catalogo" asp-action="Index">Explorar el catálogo</a>
+        </div>
+    }
+    else
+    {
+        <div class="row g-4">
+            <div class="col-lg-8">
+                @foreach (var item in Model)
+                {
+                    <div class="card mb-3">
+                        <div class="card-body d-flex gap-3 align-items-center">
+                            <img src="@item.UrlImagen" alt="@item.Nombre" width="72" height="72"
+                                 class="rounded" style="object-fit:cover;" />
+                            <div class="flex-grow-1 min-w-0">
+                                <p class="fw-semibold mb-0 text-truncate">@item.Nombre</p>
+                                <p class="eyebrow mb-2">@item.CodigoSKU</p>
+                                <div class="d-flex flex-wrap align-items-center gap-3">
+                                    <form asp-action="Actualizar" method="post" class="d-flex align-items-center gap-1">
+                                        <input type="hidden" name="idReloj" value="@item.IdReloj" />
+                                        <label class="visually-hidden" for="c-@item.IdReloj">Cantidad de @item.Nombre</label>
+                                        <input id="c-@item.IdReloj" type="number" name="cantidad" value="@item.Cantidad"
+                                               min="1" max="999" class="form-control form-control-sm" style="width:74px;" />
+                                        <button type="submit" class="btn btn-outline-gold btn-sm" aria-label="Actualizar cantidad">
+                                            <i class="bi bi-arrow-repeat" aria-hidden="true"></i>
+                                        </button>
+                                    </form>
+                                    <span class="precio">@Formato.Soles(item.Subtotal)</span>
+                                </div>
+                            </div>
+                            <form asp-action="Quitar" method="post">
+                                <input type="hidden" name="idReloj" value="@item.IdReloj" />
+                                <button type="submit" class="btn btn-ghost text-danger" aria-label="Quitar @item.Nombre">
+                                    <i class="bi bi-trash" aria-hidden="true"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                }
+                <a class="btn btn-outline-gold" asp-controller="Catalogo" asp-action="Index">
+                    <i class="bi bi-arrow-left me-1" aria-hidden="true"></i> Seguir comprando
+                </a>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h2 class="h6 font-display mb-3">Resumen</h2>
+                        <div class="d-flex justify-content-between small text-muted-vq mb-2">
+                            <span>Subtotal</span><span class="text-gold">@Formato.Soles(total)</span>
+                        </div>
+                        <div class="d-flex justify-content-between small text-muted-vq mb-2">
+                            <span>Envío</span><span class="stock-ok fw-semibold">Por coordinar</span>
+                        </div>
+                        <hr />
+                        <div class="d-flex justify-content-between fw-bold mb-3">
+                            <span>Total</span><span class="precio">@Formato.Soles(total)</span>
+                        </div>
+                        <a class="btn btn-gold w-100 d-flex align-items-center justify-content-center gap-2"
+                           asp-action="Checkout">
+                            Finalizar compra <i class="bi bi-arrow-right" aria-hidden="true"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>

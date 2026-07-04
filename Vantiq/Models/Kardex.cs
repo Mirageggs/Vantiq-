@@ -35,6 +35,7 @@ namespace Vantiq.Models
         public Reloj Reloj { get; set; } = null!;
 
         [ForeignKey(nameof(IdPedido))]
-        public Pedido? Pedido { get; set; }
+        // Si dice public Venta Venta { get; set; }, cámbialo a:
+        public Pedido? Pedido { get; set; } = null!;
     }
 }

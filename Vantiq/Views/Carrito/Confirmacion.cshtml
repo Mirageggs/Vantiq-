@@ -1,0 +1,75 @@
+@model Pedido
+@{
+    ViewData["Title"] = "Pedido registrado";
+    // Usamos directamente la propiedad de cadena única que ya tiene tu modelo
+    var codigo = Model.CodigoPedido;
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-7">
+            <div class="card text-center">
+                <div class="card-body p-4 p-lg-5">
+                    <i class="bi bi-patch-check-fill text-success d-block mb-3" style="font-size:3.2rem;" aria-hidden="true"></i>
+                    <h1 class="font-display mb-1">¡Pedido registrado!</h1>
+                    <p class="eyebrow mb-1">Número de pedido</p>
+                    <p class="h4 text-gold font-monospace">@codigo</p>
+
+                    @* Acceso correcto a la tabla relacional ESTADO_PEDIDO *@
+                    <p class="my-3">
+                        <span class="estado-pill estado-@(Model.EstadoPedido.NombreEstadoPedido.ToLower())">
+                            @Model.EstadoPedido.NombreEstadoPedido
+                        </span>
+                    </p>
+
+                    <hr class="my-4" />
+
+                    <div class="text-start small">
+                        @foreach (var det in Model.Detalles)
+                        {
+                            <div class="d-flex justify-content-between mb-1">
+                                <span class="text-muted-vq">@det.Cantidad × @det.Reloj.CodigoSKU</span>
+                                @* Formateo nativo de moneda para subtotal *@
+                                <span>@string.Format("S/ {0:N2}", det.PrecioUnitario * det.Cantidad)</span>
+                            </div>
+                        }
+                        <hr />
+                        <div class="d-flex justify-content-between fw-bold">
+                            <span>Total del pedido</span>
+                            @* Actualizado de MontoTotal a Total *@
+                            <span class="text-gold">@string.Format("S/ {0:N2}", Model.Total)</span>
+                        </div>
+
+                        @* Se comenta temporalmente porque DireccionEnvio no forma parte del modelo Pedido provisto *@
+                        @*
+                        <p class="text-muted-vq mt-2 mb-0">
+                            <i class="bi bi-geo-alt me-1" aria-hidden="true"></i>@Model.DireccionEnvio
+                        </p>
+                        *@
+                    </div>
+
+                    <div class="alert mt-4 text-start small" style="background: var(--vq-secondary); border:1px solid var(--vq-border);">
+                        <i class="bi bi-info-circle text-gold me-1" aria-hidden="true"></i>
+                        Realiza el pago correspondiente y envíanos el
+                        comprobante por WhatsApp indicando tu número de pedido. Al verificarlo, tu pedido pasará
+                        a <strong class="text-gold">Pagado</strong> y prepararemos el envío.
+                    </div>
+
+                    <a class="btn btn-gold w-100 mb-2 d-flex align-items-center justify-content-center gap-2"
+                       target="_blank" rel="noopener"
+                       href="https://wa.me/@(ViewBag.Celular)?text=Hola%20VANTIQ,%20adjunto%20mi%20comprobante%20del%20pedido%20@(codigo)">
+                        <i class="bi bi-whatsapp" aria-hidden="true"></i> Enviar comprobante por WhatsApp
+                    </a>
+                    @if (User.Identity?.IsAuthenticated == true)
+                    {
+                        <a class="btn btn-outline-gold w-100" asp-controller="Ventas" asp-action="MisCompras">Ver mis compras</a>
+                    }
+                    else
+                    {
+                        <a class="btn btn-outline-gold w-100" asp-controller="Catalogo" asp-action="Index">Volver al catálogo</a>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

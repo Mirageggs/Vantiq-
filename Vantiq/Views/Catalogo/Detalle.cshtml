@@ -1,0 +1,88 @@
+@model Reloj
+@{
+    ViewData["Title"] = Model.ModeloReloj.NombreModelo;
+    var agotado = Model.StockActual == 0 || Model.IdEstadoReloj == 2;
+    short enCarrito = ViewBag.EnCarrito;
+    var maxCompra = Model.StockActual - enCarrito;
+}
+
+<div class="container py-4">
+    <nav aria-label="Ruta de navegación">
+        <ol class="breadcrumb small">
+            <li class="breadcrumb-item"><a asp-action="Index">Catálogo</a></li>
+            <li class="breadcrumb-item">
+                <a asp-action="Index" asp-route-idCategoria="@Model.ModeloReloj.IdCategoria">
+                    @Model.ModeloReloj.Categoria.NombreCategoria
+                </a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">@Model.CodigoSKU</li>
+        </ol>
+    </nav>
+
+    <div class="card overflow-hidden">
+        <div class="row g-0">
+            @* Imagen (columna izquierda del modal de detalle en el Figma) *@
+            <div class="col-md-6 position-relative" style="background: var(--vq-secondary); min-height: 320px;">
+                <img src="@Model.UrlImagen" alt="@Model.ModeloReloj.NombreModelo — @Model.CodigoSKU"
+                     class="w-100 h-100" style="object-fit: cover;" />
+                <span class="badge-vq badge-gold position-absolute top-0 start-0 m-3">
+                    @Model.ModeloReloj.Categoria.NombreCategoria
+                </span>
+            </div>
+
+            @* Ficha (columna derecha) *@
+            <div class="col-md-6">
+                <div class="p-4 p-lg-5">
+                    <p class="eyebrow mb-1">@Model.Marca.NombreMarca · SKU @Model.CodigoSKU</p>
+                    <h1 class="font-display mb-3">@Model.ModeloReloj.NombreModelo</h1>
+
+                    <div class="d-flex align-items-baseline gap-2 mb-3">
+                        <span class="precio font-display" style="font-size:1.9rem;">@Formato.Soles(Model.Precio)</span>
+                    </div>
+
+                    @if (agotado)
+                    {
+                        <p><span class="estado-pill estado-cancelado">Agotado temporalmente</span></p>
+                    }
+                    else
+                    {
+                        <p class="mb-3">
+                            <span class="@(Model.StockActual <= 3 ? "stock-bajo" : "stock-ok") small fw-semibold">
+                                <i class="bi bi-box-seam me-1" aria-hidden="true"></i>@Model.StockActual disponibles
+                            </span>
+                            @if (enCarrito > 0)
+                            {
+                                <span class="text-muted-vq small ms-2">(ya tienes @enCarrito en tu carrito)</span>
+                            }
+                        </p>
+                    }
+
+                    <p class="text-muted-vq">@(Model.Descripcion ?? "Reloj de la colección VANTIQ.")</p>
+
+                    <hr class="my-4" />
+
+                    @if (!agotado && maxCompra > 0)
+                    {
+                        <form asp-controller="Carrito" asp-action="Agregar" method="post"
+                              class="d-flex flex-wrap gap-2 align-items-center mb-3">
+                            <input type="hidden" name="idReloj" value="@Model.IdReloj" />
+                            <input type="hidden" name="returnUrl" value="@(Context.Request.Path)" />
+                            <label for="cantidad" class="visually-hidden">Cantidad</label>
+                            <input id="cantidad" type="number" name="cantidad" value="1" min="1" max="@maxCompra"
+                                   class="form-control" style="width: 90px;" />
+                            <button type="submit" class="btn btn-gold flex-grow-1 d-flex align-items-center justify-content-center gap-2">
+                                <i class="bi bi-cart-plus" aria-hidden="true"></i> Añadir al carrito
+                            </button>
+                        </form>
+                    }
+
+                    <a class="btn btn-outline-gold w-100 d-flex align-items-center justify-content-center gap-2"
+                       target="_blank" rel="noopener"
+                       href="https://wa.me/@(ViewBag.Celular)?text=Hola%20VANTIQ,%20quiero%20asesor%C3%ADa%20sobre%20el%20reloj%20@(Model.CodigoSKU)">
+                        <i class="bi bi-whatsapp" aria-hidden="true"></i> Consultar por WhatsApp
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

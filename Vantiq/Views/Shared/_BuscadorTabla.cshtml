@@ -1,0 +1,14 @@
+@model string
+@{
+    // Componente reutilizable: filtro en tiempo real sobre una tabla.
+    // @model = id de la tabla a filtrar. Filtra por texto en todas las celdas.
+    var inputId = "buscar-" + Model;
+}
+<div class="input-group" style="max-width: 320px;">
+    <span class="input-group-text bg-transparent border-vq text-muted-vq">
+        <i class="bi bi-search" aria-hidden="true"></i>
+    </span>
+    <input type="search" id="@inputId" class="form-control border-start-0"
+           placeholder="Filtrar en la tabla…" aria-label="Filtrar tabla"
+           onkeyup="filtrarTabla('@Model', this.value)" />
+</div>

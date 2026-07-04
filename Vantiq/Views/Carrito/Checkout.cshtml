@@ -1,0 +1,83 @@
+@model CheckoutViewModel
+@using Vantiq.Models
+@{
+    ViewData["Title"] = "Finalizar compra";
+    var items = (List<ItemCarrito>)ViewBag.Items;
+    decimal total = ViewBag.Total;
+}
+
+<div class="container py-4">
+    <h1 class="font-display mb-4"><i class="bi bi-bag-check text-gold me-2" aria-hidden="true"></i>Finalizar compra</h1>
+
+    <div class="row g-4">
+        <div class="col-lg-7">
+            <div class="card">
+                <div class="card-body p-4">
+                    <h2 class="h6 font-display mb-3">Datos de contacto y envío</h2>
+                    <form asp-action="Checkout" method="post" novalidate>
+                        <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
+                        <div class="row">
+                            <div class="col-sm-6 mb-3">
+                                <label asp-for="Nombres" class="eyebrow d-block mb-1">Nombres</label>
+                                <input asp-for="Nombres" class="form-control" autocomplete="given-name" />
+                                <span asp-validation-for="Nombres" class="text-danger small"></span>
+                            </div>
+                            <div class="col-sm-6 mb-3">
+                                <label asp-for="Apellidos" class="eyebrow d-block mb-1">Apellidos</label>
+                                <input asp-for="Apellidos" class="form-control" autocomplete="family-name" />
+                                <span asp-validation-for="Apellidos" class="text-danger small"></span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6 mb-3">
+                                <label asp-for="Email" class="eyebrow d-block mb-1">Correo</label>
+                                <input asp-for="Email" class="form-control" autocomplete="email" />
+                                <span asp-validation-for="Email" class="text-danger small"></span>
+                            </div>
+                            <div class="col-sm-6 mb-3">
+                                <label asp-for="NumCelular" class="eyebrow d-block mb-1">Celular</label>
+                                <input asp-for="NumCelular" class="form-control" placeholder="999999999" autocomplete="tel" />
+                                <span asp-validation-for="NumCelular" class="text-danger small"></span>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="DireccionEnvio" class="eyebrow d-block mb-1">Dirección de envío</label>
+                            <input asp-for="DireccionEnvio" class="form-control" placeholder="Calle, número, distrito, ciudad" />
+                            <span asp-validation-for="DireccionEnvio" class="text-danger small"></span>
+                        </div>
+
+                        <h2 class="h6 font-display mt-4 mb-2">Método de pago</h2>
+                       
+                        <span asp-validation-for="IdMetodoPago" class="text-danger small d-block mb-3"></span>
+
+                        <button type="submit" class="btn btn-gold w-100 py-2">
+                            <i class="bi bi-check2-circle me-1" aria-hidden="true"></i> Confirmar pedido
+                        </button>
+                        <p class="small text-muted-vq mt-2 mb-0">
+                            Tu pedido quedará <strong class="text-gold">Pendiente</strong> hasta que verifiquemos el pago.
+                        </p>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-5">
+            <div class="card">
+                <div class="card-body p-4">
+                    <h2 class="h6 font-display mb-3">Resumen del pedido</h2>
+                    @foreach (var item in items)
+                    {
+                        <div class="d-flex justify-content-between small mb-2">
+                            <span class="text-muted-vq">@item.Cantidad × @item.Nombre</span>
+                            <span>@Formato.Soles(item.Subtotal)</span>
+                        </div>
+                    }
+                    <hr />
+                    <div class="d-flex justify-content-between fw-bold">
+                        <span>Total</span><span class="precio">@Formato.Soles(total)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

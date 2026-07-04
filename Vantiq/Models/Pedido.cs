@@ -37,8 +37,9 @@ namespace Vantiq.Models
         [ForeignKey(nameof(IdUsuario))]
         public Usuario? Usuario { get; set; }
 
-        [ForeignKey(nameof(IdMetodoPago))]
+ 
 
+        [ForeignKey(nameof(IdEstadoPedido))]
         public EstadoPedido EstadoPedido { get; set; } = null!;
 
         public ICollection<DetallePedido> Detalles { get; set; } = new List<DetallePedido>();
