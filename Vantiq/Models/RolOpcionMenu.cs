@@ -8,10 +8,10 @@ namespace Vantiq.Models
     public class RolOpcionMenu
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int IdRolOpcionMenu { get; set; }
+        public ushort IdRolOpcionMenu { get; set; }
 
         public byte IdRol { get; set; }
-        public short IdOpcionMenu { get; set; }
+        public byte IdOpcionMenu { get; set; }
 
         [ForeignKey(nameof(IdRol))]
         public Rol Rol { get; set; } = null!;

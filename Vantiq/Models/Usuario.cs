@@ -8,7 +8,7 @@ namespace Vantiq.Models
     public class Usuario
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int IdUsuario { get; set; }
+        public ushort IdUsuario { get; set; }
 
         [Required(ErrorMessage = "El nombre de usuario es obligatorio")]
         [StringLength(50, MinimumLength = 4)]
@@ -28,7 +28,6 @@ namespace Vantiq.Models
 
         // Navegaciones
         public ICollection<UsuarioRol> Roles { get; set; } = new List<UsuarioRol>();
-        public ICollection<Carrito> Carritos { get; set; } = new List<Carrito>();
         public ICollection<Pedido> PedidosGestionados { get; set; } = new List<Pedido>();
         public ICollection<Kardex> MovimientosKardex { get; set; } = new List<Kardex>();
         public Cliente? Cliente { get; set; }                   // 1 : 0..1

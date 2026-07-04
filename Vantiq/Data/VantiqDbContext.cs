@@ -28,14 +28,9 @@ namespace Vantiq.Data
         public DbSet<ModeloReloj> ModelosReloj { get; set; } = null!;
         public DbSet<EstadoReloj> EstadosReloj { get; set; } = null!;
         public DbSet<Reloj> Relojes { get; set; } = null!;
-        public DbSet<Carrito> Carritos { get; set; } = null!;
-        public DbSet<DetalleCarrito> DetallesCarrito { get; set; } = null!;
-        public DbSet<MetodoPago> MetodosPago { get; set; } = null!;
         public DbSet<EstadoPedido> EstadosPedido { get; set; } = null!;
         public DbSet<Pedido> Pedidos { get; set; } = null!;
         public DbSet<DetallePedido> DetallesPedido { get; set; } = null!;
-        public DbSet<TipoComprobante> TiposComprobante { get; set; } = null!;
-        public DbSet<Comprobante> Comprobantes { get; set; } = null!;
         public DbSet<ConceptoKardex> ConceptosKardex { get; set; } = null!;
         public DbSet<Kardex> MovimientosKardex { get; set; } = null!;
 
@@ -52,9 +47,7 @@ namespace Vantiq.Data
             modelBuilder.Entity<Rol>().Property(x => x.IdRol).ValueGeneratedNever();
             modelBuilder.Entity<OpcionMenu>().Property(x => x.IdOpcionMenu).ValueGeneratedNever();
             modelBuilder.Entity<EstadoReloj>().Property(x => x.IdEstadoReloj).ValueGeneratedNever();
-            modelBuilder.Entity<MetodoPago>().Property(x => x.IdMetodoPago).ValueGeneratedNever();
             modelBuilder.Entity<EstadoPedido>().Property(x => x.IdEstadoPedido).ValueGeneratedNever();
-            modelBuilder.Entity<TipoComprobante>().Property(x => x.IdTipoComprobante).ValueGeneratedNever();
             modelBuilder.Entity<ConceptoKardex>().Property(x => x.IdConcepto).ValueGeneratedNever();
 
             // =================================================================
@@ -69,16 +62,13 @@ namespace Vantiq.Data
             modelBuilder.Entity<ModeloReloj>().HasIndex(x => x.NombreModelo).IsUnique();
             modelBuilder.Entity<EstadoReloj>().HasIndex(x => x.NombreEstadoReloj).IsUnique();
             modelBuilder.Entity<Reloj>().HasIndex(x => x.CodigoSKU).IsUnique();
-            modelBuilder.Entity<MetodoPago>().HasIndex(x => x.NombreMetodoPago).IsUnique();
             modelBuilder.Entity<EstadoPedido>().HasIndex(x => x.NombreEstadoPedido).IsUnique();
             modelBuilder.Entity<Pedido>().HasIndex(x => x.CodigoPedido).IsUnique();
-            modelBuilder.Entity<TipoComprobante>().HasIndex(x => x.NombreTipo).IsUnique();
             modelBuilder.Entity<ConceptoKardex>().HasIndex(x => x.NombreConcepto).IsUnique();
 
             // Unicos compuestos: evitan duplicar la misma asignacion o linea
             modelBuilder.Entity<UsuarioRol>().HasIndex(x => new { x.IdUsuario, x.IdRol }).IsUnique();
             modelBuilder.Entity<RolOpcionMenu>().HasIndex(x => new { x.IdRol, x.IdOpcionMenu }).IsUnique();
-            modelBuilder.Entity<DetalleCarrito>().HasIndex(x => new { x.IdCarrito, x.IdReloj }).IsUnique();
 
             // Unico filtrado: muchos CLIENTE invitados con IdUsuario NULL,
             // pero como maximo un CLIENTE por cada USUARIO registrado.
@@ -87,9 +77,6 @@ namespace Vantiq.Data
                 .IsUnique()
                 .HasFilter("[IdUsuario] IS NOT NULL");
 
-            // Un comprobante por pedido (lado unico de la relacion 1:0..1)
-            modelBuilder.Entity<Comprobante>().HasIndex(x => x.IdPedido).IsUnique();
-
             // =================================================================
             // 3. RELACIONES 1 : 0..1 (Fluent API define el lado dependiente)
             // =================================================================
@@ -97,11 +84,6 @@ namespace Vantiq.Data
                 .HasOne(c => c.Usuario)
                 .WithOne(u => u.Cliente)
                 .HasForeignKey<Cliente>(c => c.IdUsuario);
-
-            modelBuilder.Entity<Comprobante>()
-                .HasOne(c => c.Pedido)
-                .WithOne(p => p.Comprobante)
-                .HasForeignKey<Comprobante>(c => c.IdPedido);
 
             // =================================================================
             // 4. CONVERSION DE ENUM: TipoMovimiento se guarda como texto
@@ -120,10 +102,7 @@ namespace Vantiq.Data
             modelBuilder.Entity<Usuario>().Property(x => x.FechaHoraModificacion).HasDefaultValueSql("GETDATE()");
             modelBuilder.Entity<ModeloReloj>().Property(x => x.FechaHoraRegistro).HasDefaultValueSql("GETDATE()");
             modelBuilder.Entity<Reloj>().Property(x => x.FechaHoraRegistro).HasDefaultValueSql("GETDATE()");
-            modelBuilder.Entity<Carrito>().Property(x => x.FechaHoraCreacion).HasDefaultValueSql("GETDATE()");
-            modelBuilder.Entity<Carrito>().Property(x => x.FechaHoraModificacion).HasDefaultValueSql("GETDATE()");
             modelBuilder.Entity<Pedido>().Property(x => x.FechaHoraPedido).HasDefaultValueSql("GETDATE()");
-            modelBuilder.Entity<Comprobante>().Property(x => x.FechaHoraEmision).HasDefaultValueSql("GETDATE()");
             modelBuilder.Entity<Kardex>().Property(x => x.FechaHoraMovimiento).HasDefaultValueSql("GETDATE()");
 
             // =================================================================
@@ -191,13 +170,7 @@ namespace Vantiq.Data
                 new EstadoReloj { IdEstadoReloj = 2, NombreEstadoReloj = "Agotado", Descripcion = "Sin stock; visible pero no comprable", EstaActivo = true },
                 new EstadoReloj { IdEstadoReloj = 3, NombreEstadoReloj = "Descontinuado", Descripcion = "Retirado del catalogo publico", EstaActivo = true });
 
-            // ----- Metodos de pago (elicitacion: pagos locales) -----
-            modelBuilder.Entity<MetodoPago>().HasData(
-                new MetodoPago { IdMetodoPago = 1, NombreMetodoPago = "Yape", EstaActivo = true },
-                new MetodoPago { IdMetodoPago = 2, NombreMetodoPago = "Plin", EstaActivo = true },
-                new MetodoPago { IdMetodoPago = 3, NombreMetodoPago = "Transferencia bancaria", EstaActivo = true },
-                new MetodoPago { IdMetodoPago = 4, NombreMetodoPago = "Tarjeta de credito o debito", EstaActivo = true },
-                new MetodoPago { IdMetodoPago = 5, NombreMetodoPago = "Efectivo en tienda", EstaActivo = true });
+           
 
             // ----- Estados del pedido (diagrama de estados de la Fase 2) -----
             modelBuilder.Entity<EstadoPedido>().HasData(
@@ -207,10 +180,7 @@ namespace Vantiq.Data
                 new EstadoPedido { IdEstadoPedido = 4, NombreEstadoPedido = "Entregado", Descripcion = "Recibido por el cliente; cierra el ciclo", EstaActivo = true },
                 new EstadoPedido { IdEstadoPedido = 5, NombreEstadoPedido = "Cancelado", Descripcion = "Anulado; repone stock via kardex de entrada", EstaActivo = true });
 
-            // ----- Tipos de comprobante -----
-            modelBuilder.Entity<TipoComprobante>().HasData(
-                new TipoComprobante { IdTipoComprobante = 1, NombreTipo = "Boleta", EstaActivo = true },
-                new TipoComprobante { IdTipoComprobante = 2, NombreTipo = "Factura", EstaActivo = true });
+  
 
             // ----- Conceptos de kardex -----
             modelBuilder.Entity<ConceptoKardex>().HasData(

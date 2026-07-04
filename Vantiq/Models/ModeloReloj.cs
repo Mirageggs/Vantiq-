@@ -8,12 +8,12 @@ namespace Vantiq.Models
     public class ModeloReloj
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int IdModeloReloj { get; set; }
+        public uint IdModeloReloj { get; set; }
 
         [Required, StringLength(60)]
         public string NombreModelo { get; set; } = null!;       // UNICO
 
-        public short IdCategoria { get; set; }
+        public ushort IdCategoria { get; set; }
 
         public DateTime FechaHoraRegistro { get; set; }         // INMUTABLE (default GETDATE())
 

@@ -14,7 +14,7 @@ namespace Vantiq.Models
         public string NombreEstadoPedido { get; set; } = null!; // UNICO
 
         [StringLength(150)]
-        public string? Descripcion { get; set; }
+        public string? Descripcion { get; set; } = null!;
 
         public bool EstaActivo { get; set; } = true;
 

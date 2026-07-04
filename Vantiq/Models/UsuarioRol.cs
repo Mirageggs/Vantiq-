@@ -8,9 +8,9 @@ namespace Vantiq.Models
     public class UsuarioRol
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int IdUsuarioRol { get; set; }
+        public uint IdUsuarioRol { get; set; }
 
-        public int IdUsuario { get; set; }
+        public ushort IdUsuario { get; set; }
         public byte IdRol { get; set; }
 
         [ForeignKey(nameof(IdUsuario))]

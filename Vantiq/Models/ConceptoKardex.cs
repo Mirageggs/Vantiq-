@@ -8,7 +8,7 @@ namespace Vantiq.Models
     public class ConceptoKardex
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public short IdConcepto { get; set; }
+        public byte IdConcepto { get; set; }
 
         [Required, StringLength(50)]
         public string NombreConcepto { get; set; } = null!;     // UNICO
@@ -16,7 +16,7 @@ namespace Vantiq.Models
         public TipoMovimiento TipoMovimiento { get; set; }      // enum persistido como nvarchar(10)
 
         [StringLength(150)]
-        public string? Descripcion { get; set; }
+        public string? Descripcion { get; set; } = null!;
 
         public bool EstaActivo { get; set; } = true;
 

@@ -1,4 +1,4 @@
-namespace Vantiq.Models
+    namespace Vantiq.Models
 {
     /// <summary>
     /// Tipo de movimiento de inventario. Reemplaza a la pseudo-tabla

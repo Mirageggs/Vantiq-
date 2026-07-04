@@ -11,17 +11,17 @@ namespace Vantiq.Models
     public class Kardex
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public long IdKardex { get; set; }
+        public ulong IdKardex { get; set; }
 
-        public int IdUsuario { get; set; }                      // quien registra el movimiento
-        public short IdConcepto { get; set; }
-        public int IdReloj { get; set; }
-        public int? IdPedido { get; set; }                      // NULO: solo movimientos por venta
+        public ushort IdUsuario { get; set; }                      // quien registra el movimiento
+        public byte IdConcepto { get; set; }
+        public uint IdReloj { get; set; }
+        public uint? IdPedido { get; set; }                      // NULO: solo movimientos por venta
 
         [Range(1, int.MaxValue, ErrorMessage = "La cantidad debe ser mayor a cero")]
-        public int Cantidad { get; set; }
+        public uint Cantidad { get; set; }
 
-        public int StockResultante { get; set; }
+        public uint StockResultante { get; set; }
 
         public DateTime FechaHoraMovimiento { get; set; }       // INMUTABLE (default GETDATE())
 

@@ -223,3 +223,4 @@ C:\Users\ajaeg\OneDrive\Escritorio\hoy\Vantiq\Vantiq\obj\Debug\net10.0\refint\Va
 C:\Users\ajaeg\OneDrive\Escritorio\hoy\Vantiq\Vantiq\obj\Debug\net10.0\Vantiq.pdb
 C:\Users\ajaeg\OneDrive\Escritorio\hoy\Vantiq\Vantiq\obj\Debug\net10.0\Vantiq.genruntimeconfig.cache
 C:\Users\ajaeg\OneDrive\Escritorio\hoy\Vantiq\Vantiq\obj\Debug\net10.0\ref\Vantiq.dll
+C:\Users\ajaeg\OneDrive\Escritorio\hoy\Vantiq\Vantiq\obj\Debug\net10.0\Vantiq.sourcelink.json

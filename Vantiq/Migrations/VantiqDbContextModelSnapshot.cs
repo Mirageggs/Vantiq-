@@ -22,44 +22,13 @@ namespace Vantiq.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Vantiq.Models.Carrito", b =>
-                {
-                    b.Property<int>("IdCarrito")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdCarrito"));
-
-                    b.Property<bool>("EstaActivo")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime>("FechaHoraCreacion")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETDATE()");
-
-                    b.Property<DateTime>("FechaHoraModificacion")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETDATE()");
-
-                    b.Property<int>("IdUsuario")
-                        .HasColumnType("int");
-
-                    b.HasKey("IdCarrito");
-
-                    b.HasIndex("IdUsuario");
-
-                    b.ToTable("CARRITO");
-                });
-
             modelBuilder.Entity("Vantiq.Models.Categoria", b =>
                 {
-                    b.Property<short>("IdCategoria")
+                    b.Property<int>("IdCategoria")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("smallint");
+                        .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<short>("IdCategoria"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdCategoria"));
 
                     b.Property<string>("Descripcion")
                         .HasMaxLength(150)
@@ -83,21 +52,21 @@ namespace Vantiq.Migrations
                     b.HasData(
                         new
                         {
-                            IdCategoria = (short)1,
+                            IdCategoria = 1,
                             Descripcion = "Relojes de cuerda automatica",
                             EstaActiva = true,
                             NombreCategoria = "Automatico"
                         },
                         new
                         {
-                            IdCategoria = (short)2,
+                            IdCategoria = 2,
                             Descripcion = "Relojes con segundo huso horario",
                             EstaActiva = true,
                             NombreCategoria = "GMT"
                         },
                         new
                         {
-                            IdCategoria = (short)3,
+                            IdCategoria = 3,
                             Descripcion = "Relojes con funcion de cronometro",
                             EstaActiva = true,
                             NombreCategoria = "Cronografo"
@@ -106,11 +75,11 @@ namespace Vantiq.Migrations
 
             modelBuilder.Entity("Vantiq.Models.Cliente", b =>
                 {
-                    b.Property<int>("IdCliente")
+                    b.Property<long>("IdCliente")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdCliente"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("IdCliente"));
 
                     b.Property<string>("Apellidos")
                         .IsRequired()
@@ -133,21 +102,6 @@ namespace Vantiq.Migrations
                         .HasMaxLength(80)
                         .HasColumnType("nvarchar(80)");
 
-                    b.Property<string>("NumCelular")
-                        .IsRequired()
-                        .HasMaxLength(15)
-                        .HasColumnType("nvarchar(15)");
-
-                    b.Property<string>("NumDocumento")
-                        .IsRequired()
-                        .HasMaxLength(11)
-                        .HasColumnType("nvarchar(11)");
-
-                    b.Property<string>("TipoDocumento")
-                        .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
-
                     b.HasKey("IdCliente");
 
                     b.HasIndex("IdUsuario")
@@ -157,47 +111,10 @@ namespace Vantiq.Migrations
                     b.ToTable("CLIENTE");
                 });
 
-            modelBuilder.Entity("Vantiq.Models.Comprobante", b =>
-                {
-                    b.Property<int>("IdComprobante")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdComprobante"));
-
-                    b.Property<DateTime>("FechaHoraEmision")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETDATE()");
-
-                    b.Property<int>("IdPedido")
-                        .HasColumnType("int");
-
-                    b.Property<byte>("IdTipoComprobante")
-                        .HasColumnType("tinyint");
-
-                    b.Property<int>("Numero")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Serie")
-                        .IsRequired()
-                        .HasMaxLength(4)
-                        .HasColumnType("nvarchar(4)");
-
-                    b.HasKey("IdComprobante");
-
-                    b.HasIndex("IdPedido")
-                        .IsUnique();
-
-                    b.HasIndex("IdTipoComprobante");
-
-                    b.ToTable("COMPROBANTE");
-                });
-
             modelBuilder.Entity("Vantiq.Models.ConceptoKardex", b =>
                 {
-                    b.Property<short>("IdConcepto")
-                        .HasColumnType("smallint");
+                    b.Property<byte>("IdConcepto")
+                        .HasColumnType("tinyint");
 
                     b.Property<string>("Descripcion")
                         .HasMaxLength(150)
@@ -226,7 +143,7 @@ namespace Vantiq.Migrations
                     b.HasData(
                         new
                         {
-                            IdConcepto = (short)1,
+                            IdConcepto = (byte)1,
                             Descripcion = "Ingreso de mercaderia nueva",
                             EstaActivo = true,
                             NombreConcepto = "Compra a proveedor",
@@ -234,7 +151,7 @@ namespace Vantiq.Migrations
                         },
                         new
                         {
-                            IdConcepto = (short)2,
+                            IdConcepto = (byte)2,
                             Descripcion = "Salida por pedido confirmado",
                             EstaActivo = true,
                             NombreConcepto = "Venta",
@@ -242,7 +159,7 @@ namespace Vantiq.Migrations
                         },
                         new
                         {
-                            IdConcepto = (short)3,
+                            IdConcepto = (byte)3,
                             Descripcion = "Reingreso por pedido cancelado o devuelto",
                             EstaActivo = true,
                             NombreConcepto = "Devolucion de cliente",
@@ -250,7 +167,7 @@ namespace Vantiq.Migrations
                         },
                         new
                         {
-                            IdConcepto = (short)4,
+                            IdConcepto = (byte)4,
                             Descripcion = "Correccion por conteo fisico",
                             EstaActivo = true,
                             NombreConcepto = "Ajuste positivo de inventario",
@@ -258,7 +175,7 @@ namespace Vantiq.Migrations
                         },
                         new
                         {
-                            IdConcepto = (short)5,
+                            IdConcepto = (byte)5,
                             Descripcion = "Correccion por merma o dano",
                             EstaActivo = true,
                             NombreConcepto = "Ajuste negativo de inventario",
@@ -266,49 +183,19 @@ namespace Vantiq.Migrations
                         });
                 });
 
-            modelBuilder.Entity("Vantiq.Models.DetalleCarrito", b =>
-                {
-                    b.Property<long>("IdDetalleCarrito")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("IdDetalleCarrito"));
-
-                    b.Property<short>("Cantidad")
-                        .HasColumnType("smallint");
-
-                    b.Property<int>("IdCarrito")
-                        .HasColumnType("int");
-
-                    b.Property<int>("IdReloj")
-                        .HasColumnType("int");
-
-                    b.HasKey("IdDetalleCarrito");
-
-                    b.HasIndex("IdReloj");
-
-                    b.HasIndex("IdCarrito", "IdReloj")
-                        .IsUnique();
-
-                    b.ToTable("DETALLE_CARRITO");
-                });
-
             modelBuilder.Entity("Vantiq.Models.DetallePedido", b =>
                 {
-                    b.Property<long>("IdDetallePedido")
+                    b.Property<decimal>("IdDetallePedido")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("decimal(20,0)");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<decimal>("IdDetallePedido"));
+
+                    b.Property<long>("IdPedido")
                         .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("IdDetallePedido"));
-
-                    b.Property<short>("Cantidad")
-                        .HasColumnType("smallint");
-
-                    b.Property<int>("IdPedido")
-                        .HasColumnType("int");
-
-                    b.Property<int>("IdReloj")
-                        .HasColumnType("int");
+                    b.Property<long>("IdReloj")
+                        .HasColumnType("bigint");
 
                     b.Property<decimal>("PrecioUnitario")
                         .HasPrecision(10, 2)
@@ -435,34 +322,34 @@ namespace Vantiq.Migrations
 
             modelBuilder.Entity("Vantiq.Models.Kardex", b =>
                 {
-                    b.Property<long>("IdKardex")
+                    b.Property<decimal>("IdKardex")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("decimal(20,0)");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<decimal>("IdKardex"));
+
+                    b.Property<long>("Cantidad")
                         .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("IdKardex"));
-
-                    b.Property<int>("Cantidad")
-                        .HasColumnType("int");
 
                     b.Property<DateTime>("FechaHoraMovimiento")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("GETDATE()");
 
-                    b.Property<short>("IdConcepto")
-                        .HasColumnType("smallint");
+                    b.Property<byte>("IdConcepto")
+                        .HasColumnType("tinyint");
 
-                    b.Property<int?>("IdPedido")
-                        .HasColumnType("int");
+                    b.Property<long?>("IdPedido")
+                        .HasColumnType("bigint");
 
-                    b.Property<int>("IdReloj")
-                        .HasColumnType("int");
+                    b.Property<long>("IdReloj")
+                        .HasColumnType("bigint");
 
                     b.Property<int>("IdUsuario")
                         .HasColumnType("int");
 
-                    b.Property<int>("StockResultante")
-                        .HasColumnType("int");
+                    b.Property<long>("StockResultante")
+                        .HasColumnType("bigint");
 
                     b.HasKey("IdKardex");
 
@@ -479,11 +366,11 @@ namespace Vantiq.Migrations
 
             modelBuilder.Entity("Vantiq.Models.Marca", b =>
                 {
-                    b.Property<short>("IdMarca")
+                    b.Property<long>("IdMarca")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("smallint");
+                        .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<short>("IdMarca"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("IdMarca"));
 
                     b.Property<bool>("EstaActiva")
                         .HasColumnType("bit");
@@ -503,72 +390,19 @@ namespace Vantiq.Migrations
                     b.HasData(
                         new
                         {
-                            IdMarca = (short)1,
+                            IdMarca = 1L,
                             EstaActiva = true,
                             NombreMarca = "VANTIQ"
                         });
                 });
 
-            modelBuilder.Entity("Vantiq.Models.MetodoPago", b =>
-                {
-                    b.Property<byte>("IdMetodoPago")
-                        .HasColumnType("tinyint");
-
-                    b.Property<bool>("EstaActivo")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("NombreMetodoPago")
-                        .IsRequired()
-                        .HasMaxLength(40)
-                        .HasColumnType("nvarchar(40)");
-
-                    b.HasKey("IdMetodoPago");
-
-                    b.HasIndex("NombreMetodoPago")
-                        .IsUnique();
-
-                    b.ToTable("METODO_PAGO");
-
-                    b.HasData(
-                        new
-                        {
-                            IdMetodoPago = (byte)1,
-                            EstaActivo = true,
-                            NombreMetodoPago = "Yape"
-                        },
-                        new
-                        {
-                            IdMetodoPago = (byte)2,
-                            EstaActivo = true,
-                            NombreMetodoPago = "Plin"
-                        },
-                        new
-                        {
-                            IdMetodoPago = (byte)3,
-                            EstaActivo = true,
-                            NombreMetodoPago = "Transferencia bancaria"
-                        },
-                        new
-                        {
-                            IdMetodoPago = (byte)4,
-                            EstaActivo = true,
-                            NombreMetodoPago = "Tarjeta de credito o debito"
-                        },
-                        new
-                        {
-                            IdMetodoPago = (byte)5,
-                            EstaActivo = true,
-                            NombreMetodoPago = "Efectivo en tienda"
-                        });
-                });
-
             modelBuilder.Entity("Vantiq.Models.ModeloReloj", b =>
                 {
-                    b.Property<int>("IdModeloReloj")
+                    b.Property<long>("IdModeloReloj")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdModeloReloj"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("IdModeloReloj"));
 
                     b.Property<bool>("EstaActivo")
                         .HasColumnType("bit");
@@ -578,8 +412,8 @@ namespace Vantiq.Migrations
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("GETDATE()");
 
-                    b.Property<short>("IdCategoria")
-                        .HasColumnType("smallint");
+                    b.Property<int>("IdCategoria")
+                        .HasColumnType("int");
 
                     b.Property<string>("NombreModelo")
                         .IsRequired()
@@ -632,8 +466,8 @@ namespace Vantiq.Migrations
 
             modelBuilder.Entity("Vantiq.Models.OpcionMenu", b =>
                 {
-                    b.Property<short>("IdOpcionMenu")
-                        .HasColumnType("smallint");
+                    b.Property<byte>("IdOpcionMenu")
+                        .HasColumnType("tinyint");
 
                     b.Property<bool>("EstaActiva")
                         .HasColumnType("bit");
@@ -661,7 +495,7 @@ namespace Vantiq.Migrations
                     b.HasData(
                         new
                         {
-                            IdOpcionMenu = (short)1,
+                            IdOpcionMenu = (byte)1,
                             EstaActiva = true,
                             NombreOpcionMenu = "USUARIOS",
                             Orden = (byte)1,
@@ -669,7 +503,7 @@ namespace Vantiq.Migrations
                         },
                         new
                         {
-                            IdOpcionMenu = (short)2,
+                            IdOpcionMenu = (byte)2,
                             EstaActiva = true,
                             NombreOpcionMenu = "INVENTARIO",
                             Orden = (byte)2,
@@ -677,7 +511,7 @@ namespace Vantiq.Migrations
                         },
                         new
                         {
-                            IdOpcionMenu = (short)3,
+                            IdOpcionMenu = (byte)3,
                             EstaActiva = true,
                             NombreOpcionMenu = "VENTAS",
                             Orden = (byte)3,
@@ -687,26 +521,16 @@ namespace Vantiq.Migrations
 
             modelBuilder.Entity("Vantiq.Models.Pedido", b =>
                 {
-                    b.Property<int>("IdPedido")
+                    b.Property<long>("IdPedido")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdPedido"));
-
-                    b.Property<string>("Ciudad")
-                        .IsRequired()
-                        .HasMaxLength(60)
-                        .HasColumnType("nvarchar(60)");
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("IdPedido"));
 
                     b.Property<string>("CodigoPedido")
                         .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
-
-                    b.Property<string>("DireccionEnvio")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
 
                     b.Property<bool>("EstaActivo")
                         .HasColumnType("bit");
@@ -716,8 +540,8 @@ namespace Vantiq.Migrations
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("GETDATE()");
 
-                    b.Property<int>("IdCliente")
-                        .HasColumnType("int");
+                    b.Property<long>("IdCliente")
+                        .HasColumnType("bigint");
 
                     b.Property<byte>("IdEstadoPedido")
                         .HasColumnType("tinyint");
@@ -725,12 +549,8 @@ namespace Vantiq.Migrations
                     b.Property<byte>("IdMetodoPago")
                         .HasColumnType("tinyint");
 
-                    b.Property<int?>("IdUsuario")
+                    b.Property<int>("IdUsuario")
                         .HasColumnType("int");
-
-                    b.Property<string>("NumSeguimiento")
-                        .HasMaxLength(40)
-                        .HasColumnType("nvarchar(40)");
 
                     b.Property<decimal>("Total")
                         .HasPrecision(10, 2)
@@ -743,8 +563,6 @@ namespace Vantiq.Migrations
 
                     b.HasIndex("IdCliente");
 
-                    b.HasIndex("IdEstadoPedido");
-
                     b.HasIndex("IdMetodoPago");
 
                     b.HasIndex("IdUsuario");
@@ -754,11 +572,11 @@ namespace Vantiq.Migrations
 
             modelBuilder.Entity("Vantiq.Models.Reloj", b =>
                 {
-                    b.Property<int>("IdReloj")
+                    b.Property<long>("IdReloj")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdReloj"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("IdReloj"));
 
                     b.Property<string>("CodigoSKU")
                         .IsRequired()
@@ -774,17 +592,14 @@ namespace Vantiq.Migrations
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("GETDATE()");
 
-                    b.Property<byte>("GarantiaMeses")
-                        .HasColumnType("tinyint");
-
                     b.Property<byte>("IdEstadoReloj")
                         .HasColumnType("tinyint");
 
-                    b.Property<short>("IdMarca")
-                        .HasColumnType("smallint");
+                    b.Property<long>("IdMarca")
+                        .HasColumnType("bigint");
 
-                    b.Property<int>("IdModeloReloj")
-                        .HasColumnType("int");
+                    b.Property<long>("IdModeloReloj")
+                        .HasColumnType("bigint");
 
                     b.Property<int>("NumOrden")
                         .HasColumnType("int");
@@ -793,8 +608,8 @@ namespace Vantiq.Migrations
                         .HasPrecision(10, 2)
                         .HasColumnType("decimal(10,2)");
 
-                    b.Property<int>("StockActual")
-                        .HasColumnType("int");
+                    b.Property<long>("StockActual")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("UrlImagen")
                         .IsRequired()
@@ -871,8 +686,8 @@ namespace Vantiq.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdRolOpcionMenu"));
 
-                    b.Property<short>("IdOpcionMenu")
-                        .HasColumnType("smallint");
+                    b.Property<byte>("IdOpcionMenu")
+                        .HasColumnType("tinyint");
 
                     b.Property<byte>("IdRol")
                         .HasColumnType("tinyint");
@@ -890,55 +705,20 @@ namespace Vantiq.Migrations
                         new
                         {
                             IdRolOpcionMenu = 1,
-                            IdOpcionMenu = (short)1,
+                            IdOpcionMenu = (byte)1,
                             IdRol = (byte)3
                         },
                         new
                         {
                             IdRolOpcionMenu = 2,
-                            IdOpcionMenu = (short)2,
+                            IdOpcionMenu = (byte)2,
                             IdRol = (byte)3
                         },
                         new
                         {
                             IdRolOpcionMenu = 3,
-                            IdOpcionMenu = (short)3,
+                            IdOpcionMenu = (byte)3,
                             IdRol = (byte)3
-                        });
-                });
-
-            modelBuilder.Entity("Vantiq.Models.TipoComprobante", b =>
-                {
-                    b.Property<byte>("IdTipoComprobante")
-                        .HasColumnType("tinyint");
-
-                    b.Property<bool>("EstaActivo")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("NombreTipo")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
-                    b.HasKey("IdTipoComprobante");
-
-                    b.HasIndex("NombreTipo")
-                        .IsUnique();
-
-                    b.ToTable("TIPO_COMPROBANTE");
-
-                    b.HasData(
-                        new
-                        {
-                            IdTipoComprobante = (byte)1,
-                            EstaActivo = true,
-                            NombreTipo = "Boleta"
-                        },
-                        new
-                        {
-                            IdTipoComprobante = (byte)2,
-                            EstaActivo = true,
-                            NombreTipo = "Factura"
                         });
                 });
 
@@ -1003,11 +783,11 @@ namespace Vantiq.Migrations
 
             modelBuilder.Entity("Vantiq.Models.UsuarioRol", b =>
                 {
-                    b.Property<int>("IdUsuarioRol")
+                    b.Property<long>("IdUsuarioRol")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdUsuarioRol"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("IdUsuarioRol"));
 
                     b.Property<byte>("IdRol")
                         .HasColumnType("tinyint");
@@ -1027,21 +807,10 @@ namespace Vantiq.Migrations
                     b.HasData(
                         new
                         {
-                            IdUsuarioRol = 1,
+                            IdUsuarioRol = 1L,
                             IdRol = (byte)3,
                             IdUsuario = 1
                         });
-                });
-
-            modelBuilder.Entity("Vantiq.Models.Carrito", b =>
-                {
-                    b.HasOne("Vantiq.Models.Usuario", "Usuario")
-                        .WithMany("Carritos")
-                        .HasForeignKey("IdUsuario")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Usuario");
                 });
 
             modelBuilder.Entity("Vantiq.Models.Cliente", b =>
@@ -1052,44 +821,6 @@ namespace Vantiq.Migrations
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Usuario");
-                });
-
-            modelBuilder.Entity("Vantiq.Models.Comprobante", b =>
-                {
-                    b.HasOne("Vantiq.Models.Pedido", "Pedido")
-                        .WithOne("Comprobante")
-                        .HasForeignKey("Vantiq.Models.Comprobante", "IdPedido")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("Vantiq.Models.TipoComprobante", "TipoComprobante")
-                        .WithMany("Comprobantes")
-                        .HasForeignKey("IdTipoComprobante")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Pedido");
-
-                    b.Navigation("TipoComprobante");
-                });
-
-            modelBuilder.Entity("Vantiq.Models.DetalleCarrito", b =>
-                {
-                    b.HasOne("Vantiq.Models.Carrito", "Carrito")
-                        .WithMany("Detalles")
-                        .HasForeignKey("IdCarrito")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("Vantiq.Models.Reloj", "Reloj")
-                        .WithMany("DetallesCarrito")
-                        .HasForeignKey("IdReloj")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Carrito");
-
-                    b.Navigation("Reloj");
                 });
 
             modelBuilder.Entity("Vantiq.Models.DetallePedido", b =>
@@ -1166,12 +897,6 @@ namespace Vantiq.Migrations
 
                     b.HasOne("Vantiq.Models.EstadoPedido", "EstadoPedido")
                         .WithMany("Pedidos")
-                        .HasForeignKey("IdEstadoPedido")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("Vantiq.Models.MetodoPago", "MetodoPago")
-                        .WithMany("Pedidos")
                         .HasForeignKey("IdMetodoPago")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -1179,13 +904,12 @@ namespace Vantiq.Migrations
                     b.HasOne("Vantiq.Models.Usuario", "Usuario")
                         .WithMany("PedidosGestionados")
                         .HasForeignKey("IdUsuario")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.Navigation("Cliente");
 
                     b.Navigation("EstadoPedido");
-
-                    b.Navigation("MetodoPago");
 
                     b.Navigation("Usuario");
                 });
@@ -1255,11 +979,6 @@ namespace Vantiq.Migrations
                     b.Navigation("Usuario");
                 });
 
-            modelBuilder.Entity("Vantiq.Models.Carrito", b =>
-                {
-                    b.Navigation("Detalles");
-                });
-
             modelBuilder.Entity("Vantiq.Models.Categoria", b =>
                 {
                     b.Navigation("Modelos");
@@ -1290,11 +1009,6 @@ namespace Vantiq.Migrations
                     b.Navigation("Relojes");
                 });
 
-            modelBuilder.Entity("Vantiq.Models.MetodoPago", b =>
-                {
-                    b.Navigation("Pedidos");
-                });
-
             modelBuilder.Entity("Vantiq.Models.ModeloReloj", b =>
                 {
                     b.Navigation("Relojes");
@@ -1307,8 +1021,6 @@ namespace Vantiq.Migrations
 
             modelBuilder.Entity("Vantiq.Models.Pedido", b =>
                 {
-                    b.Navigation("Comprobante");
-
                     b.Navigation("Detalles");
 
                     b.Navigation("MovimientosKardex");
@@ -1316,8 +1028,6 @@ namespace Vantiq.Migrations
 
             modelBuilder.Entity("Vantiq.Models.Reloj", b =>
                 {
-                    b.Navigation("DetallesCarrito");
-
                     b.Navigation("DetallesPedido");
 
                     b.Navigation("MovimientosKardex");
@@ -1330,15 +1040,8 @@ namespace Vantiq.Migrations
                     b.Navigation("UsuariosRol");
                 });
 
-            modelBuilder.Entity("Vantiq.Models.TipoComprobante", b =>
-                {
-                    b.Navigation("Comprobantes");
-                });
-
             modelBuilder.Entity("Vantiq.Models.Usuario", b =>
                 {
-                    b.Navigation("Carritos");
-
                     b.Navigation("Cliente");
 
                     b.Navigation("MovimientosKardex");

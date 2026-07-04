@@ -8,7 +8,7 @@ namespace Vantiq.Models
     public class OpcionMenu
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public short IdOpcionMenu { get; set; }
+        public byte IdOpcionMenu { get; set; }
 
         [Required, StringLength(60)]
         public string NombreOpcionMenu { get; set; } = null!;   // UNICO (indice en DbContext)
@@ -16,7 +16,7 @@ namespace Vantiq.Models
         [Required, StringLength(120)]
         public string UrlDestino { get; set; } = null!;
 
-        public byte Orden { get; set; }          // posicion en el menu
+        public byte Orden { get; set; }         // posicion en el menu
 
         public bool EstaActiva { get; set; } = true;
 

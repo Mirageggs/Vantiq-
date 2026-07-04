@@ -9,19 +9,19 @@ namespace Vantiq.Models
     public class Reloj
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int IdReloj { get; set; }
+        public uint IdReloj { get; set; }
 
         [Required, StringLength(40)]
         public string CodigoSKU { get; set; } = null!;          // UNICO: marca + modelo + numOrden
 
-        public int IdModeloReloj { get; set; }
-        public short IdMarca { get; set; }
+        public uint IdModeloReloj { get; set; }
+        public uint IdMarca { get; set; }
         public byte IdEstadoReloj { get; set; }
 
         public int NumOrden { get; set; }
 
         [StringLength(500)]
-        public string? Descripcion { get; set; }                // ficha tecnica (cristal, movimiento, etc.)
+        public string? Descripcion { get; set; } = null!;           // ficha tecnica (cristal, movimiento, etc.)
 
         [Required, StringLength(250)]
         public string UrlImagen { get; set; } = null!;
@@ -31,10 +31,9 @@ namespace Vantiq.Models
         public decimal Precio { get; set; }
 
         [Range(0, int.MaxValue, ErrorMessage = "El stock no puede ser negativo")]
-        public int StockActual { get; set; }
+        public uint StockActual { get; set; }
 
-        [Range(0, 255)]
-        public byte GarantiaMeses { get; set; }
+     
 
         public DateTime FechaHoraRegistro { get; set; }         // INMUTABLE (default GETDATE())
 
@@ -48,7 +47,7 @@ namespace Vantiq.Models
         [ForeignKey(nameof(IdEstadoReloj))]
         public EstadoReloj EstadoReloj { get; set; } = null!;
 
-        public ICollection<DetalleCarrito> DetallesCarrito { get; set; } = new List<DetalleCarrito>();
+        
         public ICollection<DetallePedido> DetallesPedido { get; set; } = new List<DetallePedido>();
         public ICollection<Kardex> MovimientosKardex { get; set; } = new List<Kardex>();
     }

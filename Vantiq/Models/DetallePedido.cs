@@ -9,14 +9,12 @@ namespace Vantiq.Models
     public class DetallePedido
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public long IdDetallePedido { get; set; }
+        public ulong IdDetallePedido { get; set; }
 
-        public int IdPedido { get; set; }
-        public int IdReloj { get; set; }
+        public uint IdPedido { get; set; }
+        public uint IdReloj { get; set; }
 
-        [Range(1, 999, ErrorMessage = "La cantidad debe ser al menos 1")]
-        public short Cantidad { get; set; }
-
+       
         [Precision(10, 2)]
         public decimal PrecioUnitario { get; set; }             // precio historico al vender
 

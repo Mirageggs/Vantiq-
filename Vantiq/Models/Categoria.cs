@@ -8,7 +8,7 @@ namespace Vantiq.Models
     public class Categoria
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public short IdCategoria { get; set; }
+        public ushort IdCategoria { get; set; }
 
         [Required, StringLength(50)]
         public string NombreCategoria { get; set; } = null!;    // UNICO

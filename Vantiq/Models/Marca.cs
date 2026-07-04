@@ -7,7 +7,7 @@ namespace Vantiq.Models
     public class Marca
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public short IdMarca { get; set; }
+        public uint IdMarca { get; set; }
 
         [Required, StringLength(50)]
         public string NombreMarca { get; set; } = null!;        // UNICO
