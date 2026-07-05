@@ -1,39 +1,48 @@
 /* ============================================================
    VANTIQ — Design System CSS
    Tema oscuro premium de relojería | Bootstrap 5 overrides
-   Tokens: https://www.figma.com/file/vantiq-ds
+   Tokens del Figma "VANTIQ Design System"
+   Tipografía: Rajdhani 500/600/700 (display) + Inter 300/400/500/600 (body)
    ============================================================ */
 
 /* ── 1. TOKENS ─────────────────────────────────────────────── */
 :root {
-  --vq-bg:        #0F0E0C;
-  --vq-bg-2:      #131210;
-  --vq-card:      #1A1815;
-  --vq-border:    #2B2721;
-  --vq-gold:      #C8A96E;
-  --vq-gold-dark: #a8894f;
-  --vq-text:      #F2EEE6;
-  --vq-muted:     #7A7570;
-  --vq-secondary: #1A1815;
+  --vq-bg:        #0F0E0C;   /* fondo general */
+  --vq-bg-2:      #131210;   /* superficie base */
+  --vq-card:      #1A1815;   /* tarjetas */
+  --vq-secondary: #242019;   /* hover / superficies internas */
+  --vq-border:    #2B2721;   /* bordes sutiles */
+  --vq-gold:      #C8A96E;   /* PRIMARIO dorado */
+  --vq-gold-deep: #a8894f;   /* dorado hover */
+  --vq-gold-dark: #a8894f;   /* alias legacy */
+  --vq-fg:        #F2EEE6;   /* alias texto principal */
+  --vq-text:      #F2EEE6;   /* texto principal */
+  --vq-muted:     #7A7570;   /* texto tenue / labels */
 
-  /* Bootstrap overrides */
-  --bs-body-bg:          var(--vq-bg);
-  --bs-body-color:       var(--vq-text);
-  --bs-border-color:     var(--vq-border);
-  --bs-card-bg:          var(--vq-card);
-  --bs-card-border-color: var(--vq-border);
-  --bs-dropdown-bg:      var(--vq-card);
+  /* ── Semánticos de estado ─ */
+  --vq-success: #4ade80;
+  --vq-info:    #60a5fa;
+  --vq-purple:  #c084fc;
+  --vq-warning: #facc15;
+  --vq-danger:  #f87171;
+
+  /* ── Bootstrap token overrides ─ */
+  --bs-body-bg:              var(--vq-bg);
+  --bs-body-color:           var(--vq-text);
+  --bs-border-color:         var(--vq-border);
+  --bs-card-bg:              var(--vq-card);
+  --bs-card-border-color:    var(--vq-border);
+  --bs-dropdown-bg:          var(--vq-card);
   --bs-dropdown-border-color: var(--vq-border);
-  --bs-dropdown-link-color: var(--vq-text);
-  --bs-dropdown-link-hover-bg: var(--vq-border);
-  --bs-input-bg:         var(--vq-bg-2);
-  --bs-link-color:       var(--vq-gold);
-  --bs-link-hover-color: #d4bc89;
+  --bs-dropdown-link-color:  var(--vq-text);
+  --bs-dropdown-link-hover-bg: rgba(200,169,110,.08);
+  --bs-input-bg:             var(--vq-bg-2);
+  --bs-link-color:           var(--vq-gold);
+  --bs-link-hover-color:     #d4bc89;
 }
 
 /* ── 2. BASE ────────────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; }
-
 html { scroll-behavior: smooth; }
 
 body {
@@ -43,14 +52,21 @@ body {
   line-height: 1.6;
 }
 
-/* Foco visible dorado — accesibilidad */
+/* Foco visible dorado — accesibilidad WCAG */
 :focus-visible {
   outline: 2px solid var(--vq-gold);
   outline-offset: 3px;
+  border-radius: 3px;
 }
 
 /* ── 3. TIPOGRAFÍA ──────────────────────────────────────────── */
-.font-display { font-family: 'Playfair Display', Georgia, serif; }
+/* Figma: titulares → Rajdhani 500/600/700, MAYÚSCULAS, tracking */
+.font-display {
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+}
 
 .eyebrow {
   font-size: .7rem;
@@ -60,12 +76,12 @@ body {
   color: var(--vq-muted);
 }
 
-.text-gold       { color: var(--vq-gold) !important; }
-.text-muted-vq   { color: var(--vq-muted) !important; }
-.tracking-wide   { letter-spacing: .1em; }
-.border-vq       { border-color: var(--vq-border) !important; }
+.text-gold      { color: var(--vq-gold) !important; }
+.text-muted-vq  { color: var(--vq-muted) !important; }
+.tracking-wide  { letter-spacing: .1em; }
+.border-vq      { border-color: var(--vq-border) !important; }
 
-/* ── 4. BARRA SUPERIOR ──────────────────────────────────────── */
+/* ── 4. BARRA SUPERIOR UTILITARIA ───────────────────────────── */
 .topbar {
   background: var(--vq-bg-2);
   border-bottom: 1px solid var(--vq-border);
@@ -74,48 +90,52 @@ body {
   letter-spacing: .06em;
 }
 
-/* ── 5. HEADER / NAVBAR ─────────────────────────────────────── */
+/* ── 5. HEADER / NAVBAR (Figma: NavBar) ─────────────────────── */
 .header-vantiq {
   background: rgba(15,14,12,.96);
   border-bottom: 1px solid var(--vq-border);
-  backdrop-filter: blur(12px);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
   position: sticky;
   top: 0;
   z-index: 1030;
 }
 
+/* Logo VANTIQ® — Rajdhani, dorado, letter-spacing .18em */
 .brand-vantiq {
-  font-family: 'Playfair Display', serif;
-  font-size: 1.55rem;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 1.65rem;
   font-weight: 700;
   color: var(--vq-gold);
-  letter-spacing: .08em;
+  letter-spacing: .18em;
   text-decoration: none;
+  text-transform: uppercase;
   line-height: 1;
-  transition: opacity .2s;
+  transition: opacity .25s;
 }
-.brand-vantiq:hover { opacity: .8; color: var(--vq-gold); }
-.brand-vantiq sup   { font-size: .45em; vertical-align: super; }
+.brand-vantiq:hover { opacity: .78; color: var(--vq-gold); }
+.brand-vantiq sup   { font-size: .42em; vertical-align: super; letter-spacing: 0; }
 
-/* Buscador dorado */
+/* Buscador con halo dorado en focus */
 .search-vq .form-control {
   background: var(--vq-bg-2);
   border-color: var(--vq-border);
   color: var(--vq-text);
-  transition: border-color .2s, box-shadow .2s;
+  transition: border-color .25s, box-shadow .25s;
 }
 .search-vq .form-control:focus {
   border-color: var(--vq-gold);
-  box-shadow: 0 0 0 3px rgba(200,169,110,.15);
+  box-shadow: 0 0 0 3px rgba(200,169,110,.16);
   background: var(--vq-bg-2);
   color: var(--vq-text);
 }
 .search-vq .input-group-text {
   background: var(--vq-bg-2);
   border-color: var(--vq-border);
+  color: var(--vq-muted);
 }
 
-/* ── 6. NAVEGACIÓN DE CATEGORÍAS ────────────────────────────── */
+/* ── 6. NAVEGACIÓN DE CATEGORÍAS (pills) ────────────────────── */
 .nav-categorias {
   background: var(--vq-bg-2);
   border-bottom: 1px solid var(--vq-border);
@@ -135,29 +155,31 @@ body {
   text-transform: uppercase;
   color: var(--vq-muted);
   text-decoration: none;
-  padding: .3rem .75rem;
+  padding: .3rem .9rem;
   border-radius: 2rem;
-  transition: color .2s, background .2s;
+  transition: color .25s, background .25s;
   display: inline-block;
 }
-.cat-link:hover { color: var(--vq-gold); }
+.cat-link:hover { color: var(--vq-gold); background: rgba(200,169,110,.07); }
 .cat-link.activo {
   color: var(--vq-gold);
-  background: rgba(200,169,110,.12);
+  background: rgba(200,169,110,.13);
+  font-weight: 600;
 }
 
 /* ── 7. BARRA DE ADMINISTRACIÓN ─────────────────────────────── */
 .nav-admin {
   background: #100f0d;
-  border-bottom: 1px solid var(--vq-gold);
+  border-bottom: 1px solid rgba(200,169,110,.3);
   font-size: .78rem;
 }
 .admin-brand {
-  font-family: 'Playfair Display', serif;
+  font-family: 'Rajdhani', sans-serif;
   color: var(--vq-gold);
   text-decoration: none;
   font-weight: 700;
-  letter-spacing: .1em;
+  letter-spacing: .12em;
+  text-transform: uppercase;
 }
 .admin-link {
   color: var(--vq-muted);
@@ -165,11 +187,11 @@ body {
   font-weight: 600;
   letter-spacing: .1em;
   text-transform: uppercase;
-  padding: .25rem .5rem;
-  border-radius: 3px;
-  transition: color .2s;
+  padding: .25rem .55rem;
+  border-radius: .4rem;
+  transition: color .25s, background .25s;
 }
-.admin-link:hover { color: var(--vq-gold); }
+.admin-link:hover { color: var(--vq-gold); background: rgba(200,169,110,.08); }
 
 /* ── 8. BOTONES ─────────────────────────────────────────────── */
 .btn-gold {
@@ -177,14 +199,15 @@ body {
   color: #0F0E0C;
   border: none;
   font-weight: 600;
-  letter-spacing: .04em;
-  transition: background .2s, transform .15s, box-shadow .2s;
-  border-radius: 4px;
+  letter-spacing: .05em;
+  border-radius: .65rem;
+  transition: background .25s, transform .15s, box-shadow .25s;
 }
 .btn-gold:hover, .btn-gold:focus {
-  background: #d4bc89;
+  background: var(--vq-gold-deep);
   color: #0F0E0C;
-  box-shadow: 0 4px 16px rgba(200,169,110,.35);
+  box-shadow: 0 4px 18px rgba(200,169,110,.42);
+  transform: translateY(-1px);
 }
 .btn-gold:active  { transform: scale(.97); }
 .btn-gold:disabled { opacity: .45; pointer-events: none; }
@@ -194,34 +217,36 @@ body {
   color: var(--vq-gold);
   background: transparent;
   font-weight: 600;
-  letter-spacing: .04em;
-  transition: background .2s, color .2s, box-shadow .2s;
-  border-radius: 4px;
+  letter-spacing: .05em;
+  border-radius: .65rem;
+  transition: background .25s, color .25s, box-shadow .25s, transform .15s;
 }
 .btn-outline-gold:hover, .btn-outline-gold:focus {
   background: rgba(200,169,110,.12);
   color: var(--vq-gold);
   border-color: var(--vq-gold);
-  box-shadow: 0 2px 12px rgba(200,169,110,.2);
+  box-shadow: 0 2px 14px rgba(200,169,110,.22);
+  transform: translateY(-1px);
 }
 
 .btn-ghost {
   background: transparent;
   border: none;
   color: var(--vq-text);
-  transition: color .2s;
+  transition: color .25s;
+  border-radius: .5rem;
 }
 .btn-ghost:hover, .btn-ghost:focus { color: var(--vq-gold); }
 
-/* Badge carrito */
+/* Badge del carrito */
 .bg-gold { background: var(--vq-gold) !important; color: #0F0E0C !important; }
 
-/* ── 9. FORMULARIOS (dark inputs, focus dorado) ─────────────── */
+/* ── 9. FORMULARIOS — dark inputs, halo dorado en focus ─────── */
 .form-control, .form-select {
   background: var(--vq-bg-2);
   border-color: var(--vq-border);
   color: var(--vq-text);
-  border-radius: 4px;
+  border-radius: .65rem;
 }
 .form-control:focus, .form-select:focus {
   background: var(--vq-bg-2);
@@ -236,102 +261,118 @@ body {
   color: var(--vq-muted);
 }
 
-/* ── 10. CARDS ──────────────────────────────────────────────── */
+/* ── 10. CARDS genéricas ────────────────────────────────────── */
 .card {
   background: var(--vq-card);
   border: 1px solid var(--vq-border);
-  border-radius: 8px;
+  border-radius: .8rem;
 }
 .card-body { padding: 1.25rem; }
 
-/* ── 11. HERO CINEMATOGRÁFICO ───────────────────────────────── */
+/* ── 11. HERO CINEMATOGRÁFICO (Figma: Hero "El Tiempo, Redefinido") ── */
 .hero-vantiq {
   position: relative;
   overflow: hidden;
-  min-height: 520px;
+  min-height: 78vh;
   display: flex;
   align-items: center;
 }
 
+/* Imagen de reloj: opacity .22, desaturada, máscara hacia la izquierda */
 .hero-img {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center;
-  filter: brightness(.35) saturate(.7);
+  object-position: center right;
+  opacity: .22;
+  filter: saturate(.6);
   z-index: 0;
+  /* Fade hacia la izquierda para que el texto sea legible */
+  -webkit-mask-image: linear-gradient(to left, black 25%, transparent 80%);
+  mask-image: linear-gradient(to left, black 25%, transparent 80%);
 }
 
+/* Gradiente oscuro desde la izquierda (texto) hacia la derecha (imagen) */
 .hero-bg {
   position: absolute;
   inset: 0;
   background: linear-gradient(
     105deg,
-    rgba(15,14,12,.92) 40%,
-    rgba(15,14,12,.55) 75%,
-    rgba(200,169,110,.08) 100%
+    rgba(15,14,12,.98) 30%,
+    rgba(15,14,12,.72) 60%,
+    rgba(15,14,12,.28) 100%
   );
   z-index: 1;
 }
 
 .hero-vantiq .container { position: relative; z-index: 2; }
 
+/* Titular enorme en Rajdhani, MAYÚSCULAS */
 .hero-title {
-  font-size: clamp(2.2rem, 6vw, 4rem);
-  font-weight: 800;
-  line-height: 1.1;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: clamp(2.5rem, 7vw, 4.8rem);
+  font-weight: 700;
+  letter-spacing: .04em;
+  line-height: 1.05;
   color: var(--vq-text);
+  text-transform: uppercase;
 }
 
+/* Stats (N° modelos / Colecciones / Garantía) */
 .hero-stat {
-  font-size: 2.4rem;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 2.6rem;
   font-weight: 700;
   color: var(--vq-gold);
   line-height: 1;
+  letter-spacing: .02em;
 }
 
-/* ── 12. FRANJA DE CONFIANZA ────────────────────────────────── */
+/* ── 12. FRANJA DE GARANTÍAS (4 íconos en cuadros dorados) ──── */
 .trust-strip {
   background: var(--vq-bg-2);
   border-top: 1px solid var(--vq-border);
   border-bottom: 1px solid var(--vq-border);
 }
 
+/* Cuadro dorado translúcido (NO círculo) */
 .trust-ico {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 2.4rem;
-  height: 2.4rem;
-  border-radius: 50%;
+  width: 2.6rem;
+  height: 2.6rem;
+  border-radius: .6rem;
   background: rgba(200,169,110,.1);
+  border: 1px solid rgba(200,169,110,.2);
   color: var(--vq-gold);
   font-size: 1.1rem;
   flex-shrink: 0;
 }
 
-/* ── 13. TARJETAS DE PRODUCTO ───────────────────────────────── */
+/* ── 13. TARJETAS DE PRODUCTO (Figma: ProductCard) ──────────── */
 .card-produto {
   background: var(--vq-card);
   border: 1px solid var(--vq-border);
-  border-radius: 8px;
+  border-radius: .8rem;
   overflow: hidden;
-  transition: border-color .25s, box-shadow .25s, transform .25s;
+  transition: border-color .25s ease, box-shadow .25s ease, transform .25s ease;
 }
 .card-produto:hover {
-  border-color: rgba(200,169,110,.4);
-  box-shadow: 0 8px 32px rgba(0,0,0,.45), 0 0 0 1px rgba(200,169,110,.12);
-  transform: translateY(-3px);
+  border-color: rgba(200,169,110,.55);
+  box-shadow: 0 1rem 2rem rgba(0,0,0,.45), 0 0 0 1px rgba(200,169,110,.18);
+  transform: translateY(-4px);
 }
 
-/* Imagen 1:1 con zoom en hover */
+/* Imagen aspect-ratio 1:1 con ZOOM en hover */
 .card-produto .foto {
   position: relative;
   overflow: hidden;
   aspect-ratio: 1 / 1;
   background: var(--vq-bg-2);
+  display: block;
 }
 .card-produto .foto img {
   width: 100%;
@@ -340,86 +381,98 @@ body {
   transition: transform .4s cubic-bezier(.25,.46,.45,.94);
   display: block;
 }
-.card-produto:hover .foto img { transform: scale(1.07); }
+.card-produto:hover .foto img { transform: scale(1.06); }
 
-/* Precio dorado */
+/* Botón "+" que aparece al hover (opacity 0→1, translateY) */
+.btn-add {
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity .25s ease, transform .25s ease;
+}
+.card-produto:hover .btn-add {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Precio en Rajdhani dorado */
 .precio {
   color: var(--vq-gold);
-  font-family: 'Playfair Display', serif;
+  font-family: 'Rajdhani', sans-serif;
   font-weight: 700;
-  font-size: 1.15rem;
+  font-size: 1.2rem;
+  letter-spacing: .03em;
 }
 
-/* Stock indicators */
-.stock-ok   { color: #4caf50; }
-.stock-bajo { color: #ffa726; }
-.stock-cero { color: #ef5350; }
+/* Indicadores de stock */
+.stock-ok   { color: #4ade80; }
+.stock-bajo { color: #fbbf24; }
+.stock-cero { color: #f87171; }
 
-/* ── 14. BADGES ─────────────────────────────────────────────── */
+/* ── 14. BADGES (Figma: badgeVQ) ───────────────────────────── */
 .badge-vq {
   display: inline-block;
-  padding: .2rem .6rem;
-  font-size: .68rem;
-  font-weight: 700;
-  letter-spacing: .07em;
-  text-transform: uppercase;
-  border-radius: 3px;
-  line-height: 1.4;
-}
-.badge-gold   { background: rgba(200,169,110,.18); color: var(--vq-gold); }
-.badge-danger { background: rgba(239,83,80,.18);  color: #ef5350; }
-.badge-warn   { background: rgba(255,167,38,.18); color: #ffa726; }
-
-/* ── 15. PILLS DE ESTADO DE VENTA ───────────────────────────── */
-.estado-pill {
-  display: inline-block;
-  padding: .25rem .75rem;
-  border-radius: 2rem;
-  font-size: .72rem;
+  padding: .2rem .65rem;
+  font-size: .67rem;
   font-weight: 700;
   letter-spacing: .08em;
   text-transform: uppercase;
+  border-radius: .4rem;
+  line-height: 1.4;
+}
+.badge-gold   { background: rgba(200,169,110,.18); color: var(--vq-gold); }
+.badge-danger { background: rgba(248,113,113,.18); color: #f87171; }
+.badge-warn   { background: rgba(251,191,36,.18);  color: #fbbf24; }
+
+/* ── 15. PILLS DE ESTADO DE VENTA (Figma: estadoPill) ──────── */
+/* Colores semánticos: pendiente=amarillo, pagado=azul, enviado=púrpura,
+   entregado=verde, cancelado=rojo */
+.estado-pill {
+  display: inline-block;
+  padding: .25rem .85rem;
+  border-radius: 2rem;
+  font-size: .7rem;
+  font-weight: 700;
+  letter-spacing: .09em;
+  text-transform: uppercase;
   white-space: nowrap;
 }
-.estado-pendiente  { background: rgba(255,193,7,.15);  color: #ffc107; }
-.estado-pagado     { background: rgba(33,150,243,.15); color: #42a5f5; }
-.estado-enviado    { background: rgba(0,188,212,.15);  color: #26c6da; }
-.estado-entregado  { background: rgba(76,175,80,.15);  color: #66bb6a; }
-.estado-cancelado  { background: rgba(239,83,80,.15);  color: #ef5350; }
+.estado-pendiente  { background: rgba(250,204,21,.15);  color: #facc15; }
+.estado-pagado     { background: rgba(96,165,250,.15);  color: #60a5fa; }
+.estado-enviado    { background: rgba(192,132,252,.15); color: #c084fc; }
+.estado-entregado  { background: rgba(74,222,128,.15);  color: #4ade80; }
+.estado-cancelado  { background: rgba(248,113,113,.15); color: #f87171; }
 
-/* ── 16. ACCESO (Login / Registro) ─────────────────────────── */
+/* ── 16. ACCESO — Login / Registro (Figma: AuthModal) ──────── */
 .auth-tab {
   flex: 1;
   text-align: center;
   padding: .5rem;
-  border-radius: 4px;
+  border-radius: .55rem;
   font-size: .82rem;
   font-weight: 600;
-  letter-spacing: .05em;
+  letter-spacing: .06em;
   text-transform: uppercase;
   color: var(--vq-muted);
   text-decoration: none;
   cursor: pointer;
-  transition: background .2s, color .2s;
+  transition: background .25s, color .25s;
   display: block;
 }
 .auth-tab:hover { color: var(--vq-gold); }
 .auth-tab.activa {
   background: var(--vq-card);
   color: var(--vq-gold);
-  box-shadow: 0 1px 4px rgba(0,0,0,.4);
+  box-shadow: 0 2px 10px rgba(0,0,0,.45);
 }
 
-/* ── 17. PANEL ADMINISTRADOR ────────────────────────────────── */
-
-/* Layout de 2 columnas sidebar + contenido */
+/* ── 17. PANEL ADMINISTRADOR (Figma: AdminView) ─────────────── */
 .admin-shell { min-height: 70vh; }
 
-/* Sidebar */
+/* Sidebar — sticky, ítem activo con borde dorado izquierdo */
 .admin-sidebar {
   background: var(--vq-card);
   border: 1px solid var(--vq-border);
-  border-radius: 8px;
+  border-radius: .8rem;
   padding: 1.25rem;
   position: sticky;
   top: 110px;
@@ -429,86 +482,96 @@ body {
   align-items: center;
   gap: .6rem;
   padding: .55rem .75rem;
-  border-radius: 5px;
+  border-radius: .5rem;
   color: var(--vq-muted);
   text-decoration: none;
   font-size: .85rem;
   font-weight: 500;
-  transition: background .2s, color .2s;
+  transition: background .25s, color .25s, border-color .25s;
+  border-left: 2px solid transparent;
 }
-.admin-side-link:hover { background: rgba(200,169,110,.08); color: var(--vq-gold); }
+.admin-side-link:hover {
+  background: rgba(200,169,110,.08);
+  color: var(--vq-gold);
+  border-left-color: rgba(200,169,110,.4);
+}
 .admin-side-link.activo {
-  background: rgba(200,169,110,.12);
+  background: rgba(200,169,110,.13);
   color: var(--vq-gold);
   font-weight: 600;
+  border-left-color: var(--vq-gold);
 }
 
-/* KPI Cards */
+/* KPI Cards — label eyebrow + valor Rajdhani + ícono de color */
 .kpi-card {
   background: var(--vq-card);
   border: 1px solid var(--vq-border);
-  border-radius: 8px;
-  transition: border-color .2s, box-shadow .2s;
+  border-radius: .8rem;
+  transition: border-color .25s, box-shadow .25s, transform .25s;
 }
 .kpi-card:hover {
-  border-color: rgba(200,169,110,.25);
-  box-shadow: 0 4px 16px rgba(0,0,0,.3);
+  border-color: rgba(200,169,110,.3);
+  box-shadow: 0 6px 22px rgba(0,0,0,.38);
+  transform: translateY(-2px);
 }
 .kpi-label {
-  font-size: .7rem;
+  font-size: .68rem;
   font-weight: 600;
-  letter-spacing: .1em;
+  letter-spacing: .13em;
   text-transform: uppercase;
   color: var(--vq-muted);
 }
 .kpi-value {
-  font-size: 2rem;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 2.2rem;
   font-weight: 700;
+  letter-spacing: .02em;
   color: var(--vq-text);
   line-height: 1.1;
 }
 
-/* Íconos coloreados por KPI */
+/* Íconos de KPI en cuadro de color */
 .kpi-ico {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 2.4rem;
-  height: 2.4rem;
-  border-radius: 8px;
-  font-size: 1.1rem;
+  width: 2.6rem;
+  height: 2.6rem;
+  border-radius: .65rem;
+  font-size: 1.15rem;
   flex-shrink: 0;
 }
-.kpi-ico.green  { background: rgba(76,175,80,.15);   color: #66bb6a; }
-.kpi-ico.blue   { background: rgba(33,150,243,.15);  color: #42a5f5; }
-.kpi-ico.yellow { background: rgba(255,193,7,.15);   color: #ffd54f; }
-.kpi-ico.purple { background: rgba(156,39,176,.15);  color: #ba68c8; }
+.kpi-ico.green  { background: rgba(74,222,128,.15);  color: #4ade80; }
+.kpi-ico.blue   { background: rgba(96,165,250,.15);  color: #60a5fa; }
+.kpi-ico.yellow { background: rgba(250,204,21,.15);  color: #facc15; }
+.kpi-ico.purple { background: rgba(192,132,252,.15); color: #c084fc; }
 
-/* ── 18. TABLAS ADMIN ───────────────────────────────────────── */
+/* ── 18. TABLAS ADMIN (.table-vq) ───────────────────────────── */
 .table-vq {
   color: var(--vq-text);
   border-color: var(--vq-border);
   --bs-table-bg: transparent;
   --bs-table-border-color: var(--vq-border);
-  --bs-table-hover-bg: rgba(200,169,110,.05);
+  --bs-table-hover-bg: var(--vq-secondary);
   --bs-table-striped-bg: rgba(255,255,255,.02);
 }
 .table-vq thead th {
-  font-size: .7rem;
+  font-size: .68rem;
   font-weight: 700;
-  letter-spacing: .12em;
+  letter-spacing: .14em;
   text-transform: uppercase;
   color: var(--vq-muted);
+  background: var(--vq-bg-2);
   border-bottom: 1px solid var(--vq-border);
-  padding-bottom: .75rem;
+  padding: .9rem .75rem;
 }
 .table-vq tbody td {
   vertical-align: middle;
   border-color: rgba(43,39,33,.7);
-  padding: .7rem .75rem;
+  padding: .75rem .75rem;
 }
 
-/* Toolbar (buscador + pills) */
+/* Toolbar: buscador + pills de filtro */
 .table-toolbar {
   display: flex;
   flex-wrap: wrap;
@@ -520,21 +583,23 @@ body {
 .dropdown-menu {
   background: var(--vq-card);
   border: 1px solid var(--vq-border);
-  border-radius: 6px;
-  box-shadow: 0 8px 32px rgba(0,0,0,.5);
+  border-radius: .7rem;
+  box-shadow: 0 12px 40px rgba(0,0,0,.6);
   min-width: 14rem;
+  padding: .4rem;
 }
 .dropdown-item {
   color: var(--vq-text);
   font-size: .875rem;
-  padding: .5rem 1rem;
+  padding: .5rem .9rem;
+  border-radius: .45rem;
   transition: background .15s;
 }
 .dropdown-item:hover, .dropdown-item:focus {
   background: rgba(200,169,110,.1);
   color: var(--vq-gold);
 }
-.dropdown-divider { border-color: var(--vq-border); }
+.dropdown-divider { border-color: var(--vq-border); margin: .3rem 0; }
 
 /* ── 20. BREADCRUMB ─────────────────────────────────────────── */
 .breadcrumb-item + .breadcrumb-item::before { color: var(--vq-muted); }
@@ -548,7 +613,7 @@ body {
   color: var(--vq-muted);
   font-size: .82rem;
 }
-.footer-vantiq .brand-vantiq { font-size: 1.2rem; }
+.footer-vantiq .brand-vantiq { font-size: 1.35rem; }
 
 /* ── 22. BOTÓN FLOTANTE WHATSAPP ────────────────────────────── */
 .whatsapp-float {
@@ -556,26 +621,27 @@ body {
   bottom: 1.75rem;
   right: 1.75rem;
   z-index: 1050;
-  width: 3.25rem;
-  height: 3.25rem;
+  width: 3.4rem;
+  height: 3.4rem;
   border-radius: 50%;
   background: #25d366;
   color: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.5rem;
-  box-shadow: 0 4px 20px rgba(37,211,102,.45);
+  font-size: 1.55rem;
+  box-shadow: 0 4px 22px rgba(37,211,102,.5);
   text-decoration: none;
-  transition: transform .2s, box-shadow .2s;
+  transition: transform .25s, box-shadow .25s;
 }
 .whatsapp-float:hover {
   transform: scale(1.1);
-  box-shadow: 0 6px 28px rgba(37,211,102,.6);
+  box-shadow: 0 6px 32px rgba(37,211,102,.68);
   color: #fff;
 }
 
-/* ── 23. TOASTS ─────────────────────────────────────────────── */
+/* ── 23. SISTEMA DE TOASTS (TempData ok/error/warn) ─────────── */
+/* aria-live y borde-izquierdo de color por variante */
 .toast-container-vq {
   position: fixed;
   bottom: 1.5rem;
@@ -585,24 +651,23 @@ body {
   display: flex;
   flex-direction: column;
   gap: .5rem;
-  width: min(420px, 92vw);
+  width: min(430px, 94vw);
 }
-
 .toast-vq {
   background: var(--vq-card);
   border: 1px solid var(--vq-border);
   border-left: 4px solid var(--vq-muted);
-  border-radius: 6px;
-  padding: .85rem 1rem;
-  box-shadow: 0 6px 24px rgba(0,0,0,.5);
+  border-radius: .7rem;
+  padding: .9rem 1rem;
+  box-shadow: 0 8px 30px rgba(0,0,0,.58);
   animation: slideUp .3s ease;
 }
-.toast-vq.ok    { border-left-color: #4caf50; }
-.toast-vq.error { border-left-color: #ef5350; }
-.toast-vq.warn  { border-left-color: #ffa726; }
+.toast-vq.ok    { border-left-color: #4ade80; }
+.toast-vq.error { border-left-color: #f87171; }
+.toast-vq.warn  { border-left-color: #facc15; }
 
 @keyframes slideUp {
-  from { transform: translateY(12px); opacity: 0; }
+  from { transform: translateY(14px); opacity: 0; }
   to   { transform: translateY(0);    opacity: 1; }
 }
 
@@ -619,23 +684,49 @@ hr { border-color: var(--vq-border); opacity: 1; }
 ::selection { background: rgba(200,169,110,.3); color: var(--vq-text); }
 
 /* ── 27. INVENTARIO / KARDEX ────────────────────────────────── */
-.kardex-entrada { color: #66bb6a; }
-.kardex-salida  { color: #ef5350; }
+.kardex-entrada { color: #4ade80; }
+.kardex-salida  { color: #f87171; }
 
-/* ── 28. RESPONSIVE ─────────────────────────────────────────── */
+/* ── 28. DETALLE DE PRODUCTO — specs en mini-cards (grid 2 col) */
+/* Figma: "Specs en mini-cards oscuras (grid 2 col)" */
+.specs-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: .55rem;
+}
+.spec-item {
+  background: var(--vq-bg-2);
+  border: 1px solid var(--vq-border);
+  border-radius: .65rem;
+  padding: .65rem .9rem;
+  display: flex;
+  flex-direction: column;
+  gap: .12rem;
+}
+.spec-item .eyebrow { font-size: .64rem; }
+.spec-item .spec-value {
+  font-size: .9rem;
+  font-weight: 500;
+  color: var(--vq-text);
+  line-height: 1.3;
+}
+
+/* ── 29. RESPONSIVE ─────────────────────────────────────────── */
 @media (max-width: 768px) {
-  .hero-vantiq    { min-height: 360px; }
-  .hero-title     { font-size: 2rem; }
-  .kpi-value      { font-size: 1.5rem; }
-  .admin-sidebar  { display: none; }    /* colapsado en móvil */
-  .whatsapp-float { bottom: 1rem; right: 1rem; }
+  .hero-vantiq      { min-height: 55vh; }
+  .hero-title       { font-size: 2.3rem; }
+  .hero-stat        { font-size: 2rem; }
+  .kpi-value        { font-size: 1.65rem; }
+  .admin-sidebar    { display: none; }
+  .whatsapp-float   { bottom: 1rem; right: 1rem; width: 3rem; height: 3rem; font-size: 1.35rem; }
   .toast-container-vq { bottom: 1rem; }
+  .specs-grid       { grid-template-columns: 1fr 1fr; }
 }
 
 @media (min-width: 992px) {
   .admin-sidebar { display: block !important; }
 }
 
-/* ── 29. UTILIDADES EXTRA ───────────────────────────────────── */
+/* ── 30. UTILIDADES EXTRA ───────────────────────────────────── */
 .min-w-0      { min-width: 0; }
 .object-cover { object-fit: cover; }

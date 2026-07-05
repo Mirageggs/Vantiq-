@@ -17,7 +17,7 @@
         <div class="container position-relative py-5">
             <div class="row align-items-center g-5">
                 <div class="col-lg-7">
-                    <p class="eyebrow mb-2">Colección 2026</p>
+                    <p class="eyebrow text-gold mb-2">Colección 2026</p>
                     <h1 class="hero-title font-display mb-4">
                         El Tiempo,<br /><span class="text-gold">Redefinido.</span>
                     </h1>
@@ -128,7 +128,7 @@
                             <div class="mt-auto d-flex gap-2">
                                 <a class="btn btn-outline-gold btn-sm flex-grow-1"
                                    asp-action="Detalle" asp-route-id="@reloj.IdReloj">Ver detalle</a>
-                                <form asp-controller="Carrito" asp-action="Agregar" method="post" class="d-inline">
+                                <form asp-controller="Carrito" asp-action="Agregar" method="post" class="d-inline btn-add">
                                     <input type="hidden" name="idReloj" value="@reloj.IdReloj" />
                                     <input type="hidden" name="returnUrl" value="@retorno" />
                                     <button type="submit" class="btn btn-gold btn-sm" @(agotado ? "disabled" : "")

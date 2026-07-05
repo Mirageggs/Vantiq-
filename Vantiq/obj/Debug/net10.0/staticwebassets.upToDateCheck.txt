@@ -62,7 +62,7 @@ wwwroot\lib\jquery\dist\jquery.slim.js
 wwwroot\lib\jquery\dist\jquery.slim.min.js
 wwwroot\lib\jquery\dist\jquery.slim.min.map
 wwwroot\lib\jquery\LICENSE.txt
-C:\Users\ajaeg\OneDrive\Escritorio\hoy\Vantiq\Vantiq\wwwroot\css\site.css
+C:\Users\ajaeg\OneDrive\Escritorio\hoy\Vantiq\Vantiq\wwwroot\css\vantiq.css
 C:\Users\ajaeg\OneDrive\Escritorio\hoy\Vantiq\Vantiq\wwwroot\favicon.ico
 C:\Users\ajaeg\OneDrive\Escritorio\hoy\Vantiq\Vantiq\wwwroot\js\site.js
 C:\Users\ajaeg\OneDrive\Escritorio\hoy\Vantiq\Vantiq\wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css
@@ -124,4 +124,4 @@ C:\Users\ajaeg\OneDrive\Escritorio\hoy\Vantiq\Vantiq\wwwroot\lib\jquery\dist\jqu
 C:\Users\ajaeg\OneDrive\Escritorio\hoy\Vantiq\Vantiq\wwwroot\lib\jquery\dist\jquery.slim.min.js
 C:\Users\ajaeg\OneDrive\Escritorio\hoy\Vantiq\Vantiq\wwwroot\lib\jquery\dist\jquery.slim.min.map
 C:\Users\ajaeg\OneDrive\Escritorio\hoy\Vantiq\Vantiq\wwwroot\lib\jquery\LICENSE.txt
-C:\Users\ajaeg\OneDrive\Escritorio\hoy\Vantiq\Vantiq\wwwroot\css\vantiq.css
+C:\Users\ajaeg\OneDrive\Escritorio\hoy\Vantiq\Vantiq\wwwroot\css\site.css

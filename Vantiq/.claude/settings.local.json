@@ -5,7 +5,8 @@
       "Bash(dotnet build:*)",
       "Bash(dotnet ef migrations:*)",
       "Bash(wc -l /c/Users/ajaeg/OneDrive/Escritorio/hoy/Vantiq/Vantiq/Migrations/*ModeloVantiq*.cs)",
-      "Bash(dotnet ef database:*)"
+      "Bash(dotnet ef database:*)",
+      "Bash(printf '\\\\n@section Scripts {\\\\n    <partial name=\"_ValidationScriptsPartial\" />\\\\n}\\\\n')"
     ]
   }
 }
