@@ -7,10 +7,10 @@ namespace Vantiq.Models
     public class Marca
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public uint IdMarca { get; set; }
+        public int IdMarca { get; set; }
 
         [Required, StringLength(50)]
-        public string NombreMarca { get; set; } = null!;        // UNICO
+        public string NombreMarca { get; set; } = null!;    // ÚNICO
 
         public bool EstaActiva { get; set; } = true;
 

@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(xargs grep:*)",
+      "Bash(dotnet build:*)",
+      "Bash(dotnet ef migrations:*)",
+      "Bash(wc -l /c/Users/ajaeg/OneDrive/Escritorio/hoy/Vantiq/Vantiq/Migrations/*ModeloVantiq*.cs)",
+      "Bash(dotnet ef database:*)"
+    ]
+  }
+}

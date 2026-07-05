@@ -1,10 +1,4 @@
-@using Vantiq
-@using Vantiq.Models
-@using Vantiq.ViewModels
-@using Microsoft.AspNetCore.Http
-@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
-
-@model List<Pedido>
+@model List<Venta>
 @{
     ViewData["Title"] = "Mis compras";
 }
@@ -23,41 +17,33 @@
     else
     {
         <div class="row g-3">
-            @foreach (var pedido in Model)
+            @foreach (var venta in Model)
             {
                 <div class="col-12">
                     <div class="card">
                         <div class="card-body">
                             <div class="d-flex flex-wrap align-items-center gap-3 mb-2">
-                                @* Usamos directamente la propiedad autogenerada CodigoPedido (ej. VQ-000125) *@
-                                <span class="font-monospace fw-semibold text-gold">@pedido.CodigoPedido</span>
-                                <span class="small text-muted-vq">@pedido.FechaHoraPedido.ToString("dd/MM/yyyy")</span>
-
-                                @* Accedemos al nombre del estado desde la tabla relacional EstadoPedido *@
-                                <span class="estado-pill estado-@(pedido.EstadoPedido.NombreEstadoPedido.ToLower())">
-                                    @pedido.EstadoPedido.NombreEstadoPedido
+                                <span class="font-monospace fw-semibold text-gold">@Formato.CodigoVenta(venta.IdVenta)</span>
+                                <span class="small text-muted-vq">@venta.FechaHoraVenta.ToString("dd/MM/yyyy")</span>
+                                <span class="estado-pill estado-@(venta.EstadoVenta.ToString().ToLower())">
+                                    @venta.EstadoVenta
                                 </span>
-
-                                @* Formateo nativo de moneda sin depender de la clase Formato *@
-                                <span class="ms-auto fw-bold precio">@string.Format("S/ {0:N2}", pedido.Total)</span>
+                                <span class="ms-auto fw-bold precio">@Formato.Soles(venta.MontoTotal)</span>
                             </div>
                             <div class="small">
-                                @foreach (var det in pedido.Detalles)
+                                @foreach (var det in venta.Detalles)
                                 {
                                     <div class="d-flex justify-content-between border-top border-vq py-1">
                                         <span class="text-muted-vq">@det.Cantidad × @det.Reloj.CodigoSKU</span>
-                                        @* Ajusta 'PrecioUnitario' si el nombre cambia en tu entidad DetallePedido *@
-                                        <span>@string.Format("S/ {0:N2}", det.PrecioUnitario * det.Cantidad)</span>
+                                        <span>@Formato.Soles(det.PrecioUnitarioVenta * det.Cantidad)</span>
                                     </div>
                                 }
-                                <div class="text-muted-vq mt-2">
-                                    @* Nota: En la declaración de tu modelo 'Pedido' mapeaste la navegación de
-                                        IdMetodoPago apuntando erróneamente a 'EstadoPedido'. Una vez que corrijas
-                                        esa propiedad en tu clase C#, podrás descomentar la siguiente línea:
-
-<i class="bi bi-credit-card me-1" aria-hidden="true"></i> @pedido.MetodoPago.NombreMetodoPago
-                                    *@
-                                </div>
+                                @if (venta.MetodoPago != null)
+                                {
+                                    <div class="text-muted-vq mt-2">
+                                        <i class="bi bi-credit-card me-1" aria-hidden="true"></i>@venta.MetodoPago.NombreMetodoPago
+                                    </div>
+                                }
                             </div>
                         </div>
                     </div>

@@ -63,13 +63,9 @@
                                     <td>@mov.StockResultante</td>
                                     <td class="small text-muted-vq">@mov.Usuario.NombreUsuario</td>
                                     <td class="small font-monospace">
-                                        @if (mov.IdPedido != null)
+                                        @if (mov.IdVenta != null)
                                         {
-                                            @* Si en tu controlador de Kardex haces .Include(k => k.Pedido), lo ideal es usar esto: *@
-                                            @* @mov.Pedido.CodigoPedido *@
-
-                                            @* Si NO incluyes la tabla Pedido y solo tienes el ID, forzamos el formato visualmente: *@
-                                            @($"VQ-{mov.IdPedido.Value:D6}")
+                                            @Formato.CodigoVenta(mov.IdVenta.Value)
                                         }
                                         else
                                         {

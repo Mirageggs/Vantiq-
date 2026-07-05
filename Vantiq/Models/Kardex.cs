@@ -4,26 +4,26 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Vantiq.Models
 {
     /// <summary>
-    /// Registro inmutable de cada movimiento de inventario. Fuente de verdad
-    /// del stock: RELOJ.StockActual se recalcula a partir de estos asientos.
+    /// Registro inmutable de cada movimiento de inventario.
+    /// RELOJ.StockActual se mantiene sincronizado con estos asientos.
     /// </summary>
     [Table("KARDEX")]
     public class Kardex
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public ulong IdKardex { get; set; }
+        public long IdKardex { get; set; }
 
-        public ushort IdUsuario { get; set; }                      // quien registra el movimiento
+        public int IdUsuario { get; set; }      // quien registra el movimiento
         public byte IdConcepto { get; set; }
-        public uint IdReloj { get; set; }
-        public uint? IdPedido { get; set; }                      // NULO: solo movimientos por venta
+        public int IdReloj { get; set; }
+        public int? IdVenta { get; set; }       // NULO: movimientos manuales (ajustes)
 
         [Range(1, int.MaxValue, ErrorMessage = "La cantidad debe ser mayor a cero")]
-        public uint Cantidad { get; set; }
+        public int Cantidad { get; set; }
 
-        public uint StockResultante { get; set; }
+        public int StockResultante { get; set; }
 
-        public DateTime FechaHoraMovimiento { get; set; }       // INMUTABLE (default GETDATE())
+        public DateTime FechaHoraMovimiento { get; set; }   // default GETDATE()
 
         [ForeignKey(nameof(IdUsuario))]
         public Usuario Usuario { get; set; } = null!;
@@ -34,8 +34,7 @@ namespace Vantiq.Models
         [ForeignKey(nameof(IdReloj))]
         public Reloj Reloj { get; set; } = null!;
 
-        [ForeignKey(nameof(IdPedido))]
-        // Si dice public Venta Venta { get; set; }, cámbialo a:
-        public Pedido? Pedido { get; set; } = null!;
+        [ForeignKey(nameof(IdVenta))]
+        public Venta? Venta { get; set; }
     }
 }

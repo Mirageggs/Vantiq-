@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Vantiq")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e736bb4ce026c8d8ed424c496f07eb863f68a72b")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9abfe77dbbe8a58bacf2d36241b6aff1dad53b63")]
 [assembly: System.Reflection.AssemblyProductAttribute("Vantiq")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Vantiq")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

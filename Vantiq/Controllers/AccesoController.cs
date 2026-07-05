@@ -56,7 +56,7 @@ namespace Vantiq.Controllers
                 new ClaimsPrincipal(identidad));
 
             if (claims.Any(c => c.Type == ClaimTypes.Role && c.Value == "Administrador"))
-                return RedirectToAction("Index", "Dashboard");
+                return RedirectToAction("Index", "Ventas");
 
             return !string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl)
                 ? Redirect(returnUrl)

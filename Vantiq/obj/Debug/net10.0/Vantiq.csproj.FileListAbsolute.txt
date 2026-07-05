@@ -147,7 +147,6 @@ C:\Users\ajaeg\OneDrive\Escritorio\hoy\Vantiq\Vantiq\obj\Debug\net10.0\rjsmcshtm
 C:\Users\ajaeg\OneDrive\Escritorio\hoy\Vantiq\Vantiq\obj\Debug\net10.0\scopedcss\Views\Shared\_Layout.cshtml.rz.scp.css
 C:\Users\ajaeg\OneDrive\Escritorio\hoy\Vantiq\Vantiq\obj\Debug\net10.0\scopedcss\bundle\Vantiq.styles.css
 C:\Users\ajaeg\OneDrive\Escritorio\hoy\Vantiq\Vantiq\obj\Debug\net10.0\scopedcss\projectbundle\Vantiq.bundle.scp.css
-C:\Users\ajaeg\OneDrive\Escritorio\hoy\Vantiq\Vantiq\obj\Debug\net10.0\compressed\gekbezp1lh-{0}-b9sayid5wm-b9sayid5wm.gz
 C:\Users\ajaeg\OneDrive\Escritorio\hoy\Vantiq\Vantiq\obj\Debug\net10.0\compressed\luunmsr6px-{0}-61n19gt1b8-61n19gt1b8.gz
 C:\Users\ajaeg\OneDrive\Escritorio\hoy\Vantiq\Vantiq\obj\Debug\net10.0\compressed\70z2lu7tk4-{0}-xtxxf3hu2r-xtxxf3hu2r.gz
 C:\Users\ajaeg\OneDrive\Escritorio\hoy\Vantiq\Vantiq\obj\Debug\net10.0\compressed\zth3dx994f-{0}-bqjiyaj88i-bqjiyaj88i.gz
@@ -216,7 +215,6 @@ C:\Users\ajaeg\OneDrive\Escritorio\hoy\Vantiq\Vantiq\obj\Debug\net10.0\staticweb
 C:\Users\ajaeg\OneDrive\Escritorio\hoy\Vantiq\Vantiq\obj\Debug\net10.0\staticwebassets.development.json
 C:\Users\ajaeg\OneDrive\Escritorio\hoy\Vantiq\Vantiq\obj\Debug\net10.0\staticwebassets.build.endpoints.json
 C:\Users\ajaeg\OneDrive\Escritorio\hoy\Vantiq\Vantiq\obj\Debug\net10.0\swae.build.ex.cache
-C:\Users\ajaeg\OneDrive\Escritorio\hoy\Vantiq\Vantiq\obj\Debug\net10.0\staticwebassets.upToDateCheck.txt
 C:\Users\ajaeg\OneDrive\Escritorio\hoy\Vantiq\Vantiq\obj\Debug\net10.0\Vantiq.csproj.Up2Date
 C:\Users\ajaeg\OneDrive\Escritorio\hoy\Vantiq\Vantiq\obj\Debug\net10.0\Vantiq.dll
 C:\Users\ajaeg\OneDrive\Escritorio\hoy\Vantiq\Vantiq\obj\Debug\net10.0\refint\Vantiq.dll
@@ -225,3 +223,6 @@ C:\Users\ajaeg\OneDrive\Escritorio\hoy\Vantiq\Vantiq\obj\Debug\net10.0\Vantiq.ge
 C:\Users\ajaeg\OneDrive\Escritorio\hoy\Vantiq\Vantiq\obj\Debug\net10.0\ref\Vantiq.dll
 C:\Users\ajaeg\OneDrive\Escritorio\hoy\Vantiq\Vantiq\obj\Debug\net10.0\Vantiq.sourcelink.json
 C:\Users\ajaeg\OneDrive\Escritorio\hoy\Vantiq\Vantiq\bin\Debug\net10.0\BCrypt-Net-Next.dll
+C:\Users\ajaeg\OneDrive\Escritorio\hoy\Vantiq\Vantiq\obj\Debug\net10.0\compressed\gekbezp1lh-{0}-hdna01e96x-hdna01e96x.gz
+C:\Users\ajaeg\OneDrive\Escritorio\hoy\Vantiq\Vantiq\obj\Debug\net10.0\compressed\7ugqk0naix-{0}-fqbvgq8gr2-fqbvgq8gr2.gz
+C:\Users\ajaeg\OneDrive\Escritorio\hoy\Vantiq\Vantiq\obj\Debug\net10.0\staticwebassets.upToDateCheck.txt

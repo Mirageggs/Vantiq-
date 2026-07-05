@@ -8,7 +8,7 @@ using Vantiq.Models;
 namespace Vantiq.Controllers
 {
     /// <summary>
-    /// Menu INVENTARIO del Administrador: catalogo de relojes y kardex.
+    /// Menú INVENTARIO del Administrador: catálogo de relojes y kardex.
     /// Regla de oro: el stock SOLO cambia mediante movimientos de kardex.
     /// </summary>
     [Authorize(Roles = "Administrador")]
@@ -17,8 +17,7 @@ namespace Vantiq.Controllers
         private readonly VantiqDbContext _db;
         public InventarioController(VantiqDbContext db) => _db = db;
 
-        // CORRECCIÓN: Parsear a ushort según tu modelo Usuario
-        private ushort IdAdmin => ushort.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        private int IdAdmin => int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
         [HttpGet]
         public async Task<IActionResult> Index() =>
@@ -37,12 +36,11 @@ namespace Vantiq.Controllers
         }
 
         [HttpPost, ValidateAntiForgeryToken]
-        // CORRECCIÓN: Uso estricto de uint para IDs y cantidades numéricas
-        public async Task<IActionResult> Crear(uint idModeloReloj, short idMarca, uint numOrden,
-            decimal precio, string urlImagen, string? descripcion, uint stockInicial)
+        public async Task<IActionResult> Crear(int idModeloReloj, int idMarca, int numOrden,
+            decimal precio, string urlImagen, string? descripcion, int stockInicial)
         {
             var modelo = await _db.ModelosReloj.FindAsync(idModeloReloj);
-            var marca = await _db.Marcas.FindAsync(idMarca);
+            var marca  = await _db.Marcas.FindAsync(idMarca);
 
             if (modelo == null || marca == null || numOrden < 1 || precio <= 0
                 || string.IsNullOrWhiteSpace(urlImagen))
@@ -52,7 +50,6 @@ namespace Vantiq.Controllers
                 return View();
             }
 
-            // SKU = MARCA-MODELO-NNN (regla del ER)
             var sku = $"{marca.NombreMarca}-{modelo.NombreModelo.Replace("-", "")}-{numOrden:D3}".ToUpper();
             if (await _db.Relojes.AnyAsync(r => r.CodigoSKU == sku))
             {
@@ -64,26 +61,28 @@ namespace Vantiq.Controllers
             using var tx = await _db.Database.BeginTransactionAsync();
             var reloj = new Reloj
             {
-                CodigoSKU = sku,
-                IdModeloReloj = idModeloReloj,
-                IdEstadoReloj = stockInicial > 0 ? (byte)1 : (byte)2,
-                Precio = precio,
-                UrlImagen = urlImagen.Trim(),
-                Descripcion = string.IsNullOrWhiteSpace(descripcion) ? null : descripcion.Trim(),
-                StockActual = 0
+                CodigoSKU      = sku,
+                IdModeloReloj  = idModeloReloj,
+                IdMarca        = idMarca,
+                IdEstadoReloj  = stockInicial > 0 ? (byte)1 : (byte)2,
+                Precio         = precio,
+                UrlImagen      = urlImagen.Trim(),
+                Descripcion    = string.IsNullOrWhiteSpace(descripcion) ? null : descripcion.Trim(),
+                NumOrden       = numOrden,
+                StockActual    = 0
             };
             _db.Relojes.Add(reloj);
             await _db.SaveChangesAsync();
 
-            if (stockInicial > 0)   // stock inicial via kardex ENTRADA (Compra a proveedor)
+            if (stockInicial > 0)
             {
                 reloj.StockActual = stockInicial;
                 _db.MovimientosKardex.Add(new Kardex
                 {
-                    IdUsuario = IdAdmin,
-                    IdConcepto = 1, // 1 = Compra a proveedor (suponiendo que en tu bd es byte o uint)
-                    IdReloj = reloj.IdReloj,
-                    Cantidad = stockInicial,
+                    IdUsuario       = IdAdmin,
+                    IdConcepto      = 1,    // Compra a proveedor
+                    IdReloj         = reloj.IdReloj,
+                    Cantidad        = stockInicial,
                     StockResultante = stockInicial
                 });
                 await _db.SaveChangesAsync();
@@ -95,7 +94,7 @@ namespace Vantiq.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Editar(uint id)
+        public async Task<IActionResult> Editar(int id)
         {
             var reloj = await _db.Relojes
                 .Include(r => r.ModeloReloj)
@@ -107,7 +106,7 @@ namespace Vantiq.Controllers
         }
 
         [HttpPost, ValidateAntiForgeryToken]
-        public async Task<IActionResult> Editar(uint id, decimal precio, string urlImagen,
+        public async Task<IActionResult> Editar(int id, decimal precio, string urlImagen,
             string? descripcion, byte idEstadoReloj)
         {
             var reloj = await _db.Relojes.FindAsync(id);
@@ -118,9 +117,9 @@ namespace Vantiq.Controllers
                 return RedirectToAction(nameof(Editar), new { id });
             }
 
-            reloj.Precio = precio;
-            reloj.UrlImagen = urlImagen.Trim();
-            reloj.Descripcion = string.IsNullOrWhiteSpace(descripcion) ? null : descripcion.Trim();
+            reloj.Precio       = precio;
+            reloj.UrlImagen    = urlImagen.Trim();
+            reloj.Descripcion  = string.IsNullOrWhiteSpace(descripcion) ? null : descripcion.Trim();
             reloj.IdEstadoReloj = idEstadoReloj;
             await _db.SaveChangesAsync();
 
@@ -129,7 +128,7 @@ namespace Vantiq.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Kardex(uint id)
+        public async Task<IActionResult> Kardex(int id)
         {
             var reloj = await _db.Relojes
                 .Include(r => r.ModeloReloj)
@@ -151,10 +150,9 @@ namespace Vantiq.Controllers
         }
 
         [HttpPost, ValidateAntiForgeryToken]
-        // CORRECCIÓN: Adaptado para recibir uint en ids y cantidades
-        public async Task<IActionResult> RegistrarMovimiento(uint idReloj, byte idConcepto, uint cantidad)
+        public async Task<IActionResult> RegistrarMovimiento(int idReloj, byte idConcepto, int cantidad)
         {
-            var reloj = await _db.Relojes.FindAsync(idReloj);
+            var reloj   = await _db.Relojes.FindAsync(idReloj);
             var concepto = await _db.ConceptosKardex.FindAsync(idConcepto);
             if (reloj == null || concepto == null) return NotFound();
             if (cantidad < 1)
@@ -170,7 +168,6 @@ namespace Vantiq.Controllers
 
             using var tx = await _db.Database.BeginTransactionAsync();
 
-            // CORRECCIÓN: Separado en if/else porque a un uint no se le puede sumar un negativo de forma segura
             if (concepto.TipoMovimiento == TipoMovimiento.ENTRADA)
                 reloj.StockActual += cantidad;
             else
@@ -180,10 +177,10 @@ namespace Vantiq.Controllers
 
             _db.MovimientosKardex.Add(new Kardex
             {
-                IdUsuario = IdAdmin,
-                IdConcepto = idConcepto,
-                IdReloj = idReloj,
-                Cantidad = cantidad,
+                IdUsuario       = IdAdmin,
+                IdConcepto      = idConcepto,
+                IdReloj         = idReloj,
+                Cantidad        = cantidad,
                 StockResultante = reloj.StockActual
             });
             await _db.SaveChangesAsync();

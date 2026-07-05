@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Vantiq.Migrations
 {
     /// <inheritdoc />
-    public partial class m1 : Migration
+    public partial class ModeloVantiq : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -29,6 +29,23 @@ namespace Vantiq.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "CLIENTE_VISITANTE",
+                columns: table => new
+                {
+                    IdClienteVisitante = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    NombresCliVisit = table.Column<string>(type: "nvarchar(80)", maxLength: 80, nullable: false),
+                    ApellidosCliVisit = table.Column<string>(type: "nvarchar(80)", maxLength: 80, nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    NumCelular = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: true),
+                    EstaActivo = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CLIENTE_VISITANTE", x => x.IdClienteVisitante);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "CONCEPTO_KARDEX",
                 columns: table => new
                 {
@@ -41,20 +58,6 @@ namespace Vantiq.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_CONCEPTO_KARDEX", x => x.IdConcepto);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ESTADO_PEDIDO",
-                columns: table => new
-                {
-                    IdEstadoPedido = table.Column<byte>(type: "tinyint", nullable: false),
-                    NombreEstadoPedido = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
-                    Descripcion = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: true),
-                    EstaActivo = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ESTADO_PEDIDO", x => x.IdEstadoPedido);
                 });
 
             migrationBuilder.CreateTable(
@@ -75,7 +78,7 @@ namespace Vantiq.Migrations
                 name: "MARCA",
                 columns: table => new
                 {
-                    IdMarca = table.Column<long>(type: "bigint", nullable: false)
+                    IdMarca = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     NombreMarca = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     EstaActiva = table.Column<bool>(type: "bit", nullable: false)
@@ -83,6 +86,19 @@ namespace Vantiq.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_MARCA", x => x.IdMarca);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "METODO_PAGO",
+                columns: table => new
+                {
+                    IdMetodoPago = table.Column<byte>(type: "tinyint", nullable: false),
+                    NombreMetodoPago = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    EstaActivo = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_METODO_PAGO", x => x.IdMetodoPago);
                 });
 
             migrationBuilder.CreateTable(
@@ -151,7 +167,7 @@ namespace Vantiq.Migrations
                 name: "MODELO_RELOJ",
                 columns: table => new
                 {
-                    IdModeloReloj = table.Column<long>(type: "bigint", nullable: false)
+                    IdModeloReloj = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     NombreModelo = table.Column<string>(type: "nvarchar(60)", maxLength: 60, nullable: false),
                     IdCategoria = table.Column<int>(type: "int", nullable: false),
@@ -196,33 +212,10 @@ namespace Vantiq.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "CLIENTE",
-                columns: table => new
-                {
-                    IdCliente = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    IdUsuario = table.Column<int>(type: "int", nullable: true),
-                    Nombres = table.Column<string>(type: "nvarchar(80)", maxLength: 80, nullable: false),
-                    Apellidos = table.Column<string>(type: "nvarchar(80)", maxLength: 80, nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    EstaActivo = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_CLIENTE", x => x.IdCliente);
-                    table.ForeignKey(
-                        name: "FK_CLIENTE_USUARIO_IdUsuario",
-                        column: x => x.IdUsuario,
-                        principalTable: "USUARIO",
-                        principalColumn: "IdUsuario",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "USUARIO_ROL",
                 columns: table => new
                 {
-                    IdUsuarioRol = table.Column<long>(type: "bigint", nullable: false)
+                    IdUsuarioRol = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     IdUsuario = table.Column<int>(type: "int", nullable: false),
                     IdRol = table.Column<byte>(type: "tinyint", nullable: false)
@@ -245,20 +238,58 @@ namespace Vantiq.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "VENTA",
+                columns: table => new
+                {
+                    IdVenta = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    IdUsuario = table.Column<int>(type: "int", nullable: true),
+                    IdClienteVisitante = table.Column<int>(type: "int", nullable: false),
+                    IdMetodoPago = table.Column<byte>(type: "tinyint", nullable: false),
+                    MontoTotal = table.Column<decimal>(type: "decimal(10,2)", precision: 10, scale: 2, nullable: false),
+                    EstadoVenta = table.Column<byte>(type: "tinyint", nullable: false),
+                    DireccionEnvio = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
+                    NumSeguimiento = table.Column<string>(type: "nvarchar(60)", maxLength: 60, nullable: true),
+                    FechaHoraVenta = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_VENTA", x => x.IdVenta);
+                    table.ForeignKey(
+                        name: "FK_VENTA_CLIENTE_VISITANTE_IdClienteVisitante",
+                        column: x => x.IdClienteVisitante,
+                        principalTable: "CLIENTE_VISITANTE",
+                        principalColumn: "IdClienteVisitante",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_VENTA_METODO_PAGO_IdMetodoPago",
+                        column: x => x.IdMetodoPago,
+                        principalTable: "METODO_PAGO",
+                        principalColumn: "IdMetodoPago",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_VENTA_USUARIO_IdUsuario",
+                        column: x => x.IdUsuario,
+                        principalTable: "USUARIO",
+                        principalColumn: "IdUsuario",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "RELOJ",
                 columns: table => new
                 {
-                    IdReloj = table.Column<long>(type: "bigint", nullable: false)
+                    IdReloj = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     CodigoSKU = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: false),
-                    IdModeloReloj = table.Column<long>(type: "bigint", nullable: false),
-                    IdMarca = table.Column<long>(type: "bigint", nullable: false),
+                    IdModeloReloj = table.Column<int>(type: "int", nullable: false),
+                    IdMarca = table.Column<int>(type: "int", nullable: false),
                     IdEstadoReloj = table.Column<byte>(type: "tinyint", nullable: false),
                     NumOrden = table.Column<int>(type: "int", nullable: false),
                     Descripcion = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
                     UrlImagen = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
                     Precio = table.Column<decimal>(type: "decimal(10,2)", precision: 10, scale: 2, nullable: false),
-                    StockActual = table.Column<long>(type: "bigint", nullable: false),
+                    StockActual = table.Column<int>(type: "int", nullable: false),
                     FechaHoraRegistro = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()")
                 },
                 constraints: table =>
@@ -285,68 +316,30 @@ namespace Vantiq.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "PEDIDO",
+                name: "DETALLE_VENTA",
                 columns: table => new
                 {
-                    IdPedido = table.Column<long>(type: "bigint", nullable: false)
+                    IdDetalleVenta = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    CodigoPedido = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    IdCliente = table.Column<long>(type: "bigint", nullable: false),
-                    IdUsuario = table.Column<int>(type: "int", nullable: false),
-                    IdMetodoPago = table.Column<byte>(type: "tinyint", nullable: false),
-                    IdEstadoPedido = table.Column<byte>(type: "tinyint", nullable: false),
-                    Total = table.Column<decimal>(type: "decimal(10,2)", precision: 10, scale: 2, nullable: false),
-                    FechaHoraPedido = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()"),
-                    EstaActivo = table.Column<bool>(type: "bit", nullable: false)
+                    IdVenta = table.Column<int>(type: "int", nullable: false),
+                    IdReloj = table.Column<int>(type: "int", nullable: false),
+                    Cantidad = table.Column<short>(type: "smallint", nullable: false),
+                    PrecioUnitarioVenta = table.Column<decimal>(type: "decimal(10,2)", precision: 10, scale: 2, nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PEDIDO", x => x.IdPedido);
+                    table.PrimaryKey("PK_DETALLE_VENTA", x => x.IdDetalleVenta);
                     table.ForeignKey(
-                        name: "FK_PEDIDO_CLIENTE_IdCliente",
-                        column: x => x.IdCliente,
-                        principalTable: "CLIENTE",
-                        principalColumn: "IdCliente",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_PEDIDO_ESTADO_PEDIDO_IdEstadoPedido",
-                        column: x => x.IdEstadoPedido,
-                        principalTable: "ESTADO_PEDIDO",
-                        principalColumn: "IdEstadoPedido",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_PEDIDO_USUARIO_IdUsuario",
-                        column: x => x.IdUsuario,
-                        principalTable: "USUARIO",
-                        principalColumn: "IdUsuario",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "DETALLE_PEDIDO",
-                columns: table => new
-                {
-                    IdDetallePedido = table.Column<decimal>(type: "decimal(20,0)", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    IdPedido = table.Column<long>(type: "bigint", nullable: false),
-                    IdReloj = table.Column<long>(type: "bigint", nullable: false),
-                    PrecioUnitario = table.Column<decimal>(type: "decimal(10,2)", precision: 10, scale: 2, nullable: false),
-                    Cantidad = table.Column<long>(type: "bigint", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_DETALLE_PEDIDO", x => x.IdDetallePedido);
-                    table.ForeignKey(
-                        name: "FK_DETALLE_PEDIDO_PEDIDO_IdPedido",
-                        column: x => x.IdPedido,
-                        principalTable: "PEDIDO",
-                        principalColumn: "IdPedido",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_DETALLE_PEDIDO_RELOJ_IdReloj",
+                        name: "FK_DETALLE_VENTA_RELOJ_IdReloj",
                         column: x => x.IdReloj,
                         principalTable: "RELOJ",
                         principalColumn: "IdReloj",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_DETALLE_VENTA_VENTA_IdVenta",
+                        column: x => x.IdVenta,
+                        principalTable: "VENTA",
+                        principalColumn: "IdVenta",
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -354,14 +347,14 @@ namespace Vantiq.Migrations
                 name: "KARDEX",
                 columns: table => new
                 {
-                    IdKardex = table.Column<decimal>(type: "decimal(20,0)", nullable: false)
+                    IdKardex = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     IdUsuario = table.Column<int>(type: "int", nullable: false),
                     IdConcepto = table.Column<byte>(type: "tinyint", nullable: false),
-                    IdReloj = table.Column<long>(type: "bigint", nullable: false),
-                    IdPedido = table.Column<long>(type: "bigint", nullable: true),
-                    Cantidad = table.Column<long>(type: "bigint", nullable: false),
-                    StockResultante = table.Column<long>(type: "bigint", nullable: false),
+                    IdReloj = table.Column<int>(type: "int", nullable: false),
+                    IdVenta = table.Column<int>(type: "int", nullable: true),
+                    Cantidad = table.Column<int>(type: "int", nullable: false),
+                    StockResultante = table.Column<int>(type: "int", nullable: false),
                     FechaHoraMovimiento = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()")
                 },
                 constraints: table =>
@@ -372,12 +365,6 @@ namespace Vantiq.Migrations
                         column: x => x.IdConcepto,
                         principalTable: "CONCEPTO_KARDEX",
                         principalColumn: "IdConcepto",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_KARDEX_PEDIDO_IdPedido",
-                        column: x => x.IdPedido,
-                        principalTable: "PEDIDO",
-                        principalColumn: "IdPedido",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_KARDEX_RELOJ_IdReloj",
@@ -391,6 +378,12 @@ namespace Vantiq.Migrations
                         principalTable: "USUARIO",
                         principalColumn: "IdUsuario",
                         onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_KARDEX_VENTA_IdVenta",
+                        column: x => x.IdVenta,
+                        principalTable: "VENTA",
+                        principalColumn: "IdVenta",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.InsertData(
@@ -398,9 +391,9 @@ namespace Vantiq.Migrations
                 columns: new[] { "IdCategoria", "Descripcion", "EstaActiva", "NombreCategoria" },
                 values: new object[,]
                 {
-                    { 1, "Relojes de cuerda automatica", true, "Automatico" },
+                    { 1, "Relojes de cuerda automática", true, "Automatico" },
                     { 2, "Relojes con segundo huso horario", true, "GMT" },
-                    { 3, "Relojes con funcion de cronometro", true, "Cronografo" }
+                    { 3, "Relojes con función de cronómetro", true, "Cronografo" }
                 });
 
             migrationBuilder.InsertData(
@@ -408,23 +401,11 @@ namespace Vantiq.Migrations
                 columns: new[] { "IdConcepto", "Descripcion", "EstaActivo", "NombreConcepto", "TipoMovimiento" },
                 values: new object[,]
                 {
-                    { (byte)1, "Ingreso de mercaderia nueva", true, "Compra a proveedor", "ENTRADA" },
-                    { (byte)2, "Salida por pedido confirmed", true, "Venta", "SALIDA" },
-                    { (byte)3, "Reingreso por pedido cancelado o devuelto", true, "Devolucion de cliente", "ENTRADA" },
-                    { (byte)4, "Correccion por conteo fisico", true, "Ajuste positivo de inventario", "ENTRADA" },
-                    { (byte)5, "Correccion por merma o dano", true, "Ajuste negativo de inventario", "SALIDA" }
-                });
-
-            migrationBuilder.InsertData(
-                table: "ESTADO_PEDIDO",
-                columns: new[] { "IdEstadoPedido", "Descripcion", "EstaActivo", "NombreEstadoPedido" },
-                values: new object[,]
-                {
-                    { (byte)1, "Registrado; en espera de verificacion del pago", true, "Pendiente" },
-                    { (byte)2, "Pago verificado por el administrador", true, "Pagado" },
-                    { (byte)3, "Entregado al courier con numero de seguimiento", true, "Enviado" },
-                    { (byte)4, "Recibido por el cliente; cierra el ciclo", true, "Entregado" },
-                    { (byte)5, "Anulado; repone stock via kardex de entrada", true, "Cancelado" }
+                    { (byte)1, "Ingreso de mercadería nueva", true, "Compra a proveedor", "ENTRADA" },
+                    { (byte)2, "Salida por venta confirmada", true, "Venta", "SALIDA" },
+                    { (byte)3, "Reingreso por venta cancelada o devuelta", true, "Devolucion de cliente", "ENTRADA" },
+                    { (byte)4, "Corrección por conteo físico", true, "Ajuste positivo de inventario", "ENTRADA" },
+                    { (byte)5, "Corrección por merma o daño", true, "Ajuste negativo de inventario", "SALIDA" }
                 });
 
             migrationBuilder.InsertData(
@@ -432,20 +413,32 @@ namespace Vantiq.Migrations
                 columns: new[] { "IdEstadoReloj", "Descripcion", "EstaActivo", "NombreEstadoReloj" },
                 values: new object[,]
                 {
-                    { (byte)1, "Visible y comprable en el catalogo", true, "Disponible" },
+                    { (byte)1, "Visible y comprable en el catálogo", true, "Disponible" },
                     { (byte)2, "Sin stock; visible pero no comprable", true, "Agotado" },
-                    { (byte)3, "Retirado del catalogo publico", true, "Descontinuado" }
+                    { (byte)3, "Retirado del catálogo público", true, "Descontinuado" }
                 });
 
             migrationBuilder.InsertData(
                 table: "MARCA",
                 columns: new[] { "IdMarca", "EstaActiva", "NombreMarca" },
-                values: new object[] { 1L, true, "VANTIQ" });
+                values: new object[] { 1, true, "VANTIQ" });
+
+            migrationBuilder.InsertData(
+                table: "METODO_PAGO",
+                columns: new[] { "IdMetodoPago", "EstaActivo", "NombreMetodoPago" },
+                values: new object[,]
+                {
+                    { (byte)1, true, "Yape" },
+                    { (byte)2, true, "Plin" },
+                    { (byte)3, true, "Transferencia bancaria" },
+                    { (byte)4, true, "Tarjeta credito/debito" },
+                    { (byte)5, true, "Efectivo contra entrega" }
+                });
 
             migrationBuilder.InsertData(
                 table: "NEGOCIO",
                 columns: new[] { "IdNegocio", "Direccion", "NombreNegocio", "NumCelular", "RucNegocio" },
-                values: new object[] { (byte)1, null, "VANTIQ Peru", null, null });
+                values: new object[] { (byte)1, null, "VANTIQ Perú", "51999000000", null });
 
             migrationBuilder.InsertData(
                 table: "OPCION_MENU",
@@ -462,8 +455,8 @@ namespace Vantiq.Migrations
                 columns: new[] { "IdRol", "Descripcion", "EstaActivo", "NombreRol" },
                 values: new object[,]
                 {
-                    { (byte)1, "Navega el catalogo, arma carrito de sesion y realiza pedidos basicos", true, "Invitado" },
-                    { (byte)2, "Carrito persistente entre sesiones e historial de compras", true, "Cliente" },
+                    { (byte)1, "Navega el catálogo y realiza pedidos como invitado", true, "Invitado" },
+                    { (byte)2, "Historial de compras e identidad de comprador", true, "Cliente" },
                     { (byte)3, "Control total: usuarios, inventario, ventas y dashboards", true, "Administrador" }
                 });
 
@@ -471,6 +464,16 @@ namespace Vantiq.Migrations
                 table: "USUARIO",
                 columns: new[] { "IdUsuario", "ContraseniaHash", "Email", "EstaActivo", "FechaHoraModificacion", "FechaHoraRegistro", "NombreUsuario" },
                 values: new object[] { 1, "$2b$11$JbMqojLBfUvjvHuJT9LfI.Aap7ZZ6wUhiZJhiyi1flDkfzos57w5S", "admin@vantiq.pe", true, new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "admin" });
+
+            migrationBuilder.InsertData(
+                table: "MODELO_RELOJ",
+                columns: new[] { "IdModeloReloj", "EstaActivo", "FechaHoraRegistro", "IdCategoria", "NombreModelo" },
+                values: new object[,]
+                {
+                    { 1, true, new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, "Navigator" },
+                    { 2, true, new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, "Meridian" },
+                    { 3, true, new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 3, "Chronos" }
+                });
 
             migrationBuilder.InsertData(
                 table: "ROL_OPCION_MENU",
@@ -485,7 +488,20 @@ namespace Vantiq.Migrations
             migrationBuilder.InsertData(
                 table: "USUARIO_ROL",
                 columns: new[] { "IdUsuarioRol", "IdRol", "IdUsuario" },
-                values: new object[] { 1L, (byte)3, 1 });
+                values: new object[] { 1, (byte)3, 1 });
+
+            migrationBuilder.InsertData(
+                table: "RELOJ",
+                columns: new[] { "IdReloj", "CodigoSKU", "Descripcion", "FechaHoraRegistro", "IdEstadoReloj", "IdMarca", "IdModeloReloj", "NumOrden", "Precio", "StockActual", "UrlImagen" },
+                values: new object[,]
+                {
+                    { 1, "VANTIQ-NAVIGATOR-001", "Movimiento automático NH35, caja acero 316L, cristal zafiro, WR 100m.", new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), (byte)1, 1, 1, 1, 890m, 5, "https://placehold.co/400x400/1A1815/C8A96E?text=NAV-001" },
+                    { 2, "VANTIQ-NAVIGATOR-002", "Movimiento automático ETA 2824, esfera negra, correa cuero marrón.", new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), (byte)1, 1, 1, 2, 1290m, 3, "https://placehold.co/400x400/1A1815/C8A96E?text=NAV-002" },
+                    { 3, "VANTIQ-MERIDIAN-001", "GMT bicolor, movimiento automático, bisel de cerámica, WR 200m.", new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), (byte)1, 1, 2, 1, 1590m, 4, "https://placehold.co/400x400/1A1815/C8A96E?text=MER-001" },
+                    { 4, "VANTIQ-MERIDIAN-002", "GMT con función world-time, esfera azul marino, acero jubilee.", new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), (byte)1, 1, 2, 2, 2190m, 2, "https://placehold.co/400x400/1A1815/C8A96E?text=MER-002" },
+                    { 5, "VANTIQ-CHRONOS-001", "Cronógrafo manual Valjoux 7750, contador 30 min / 12 h, acero.", new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), (byte)1, 1, 3, 1, 1890m, 6, "https://placehold.co/400x400/1A1815/C8A96E?text=CHR-001" },
+                    { 6, "VANTIQ-CHRONOS-002", "Cronógrafo flyback ETA 7750, luneta taquímetro, correa de titanio.", new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), (byte)1, 1, 3, 2, 2490m, 1, "https://placehold.co/400x400/1A1815/C8A96E?text=CHR-002" }
+                });
 
             migrationBuilder.CreateIndex(
                 name: "IX_CATEGORIA_NombreCategoria",
@@ -494,33 +510,20 @@ namespace Vantiq.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_CLIENTE_IdUsuario",
-                table: "CLIENTE",
-                column: "IdUsuario",
-                unique: true,
-                filter: "[IdUsuario] IS NOT NULL");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_CONCEPTO_KARDEX_NombreConcepto",
                 table: "CONCEPTO_KARDEX",
                 column: "NombreConcepto",
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_DETALLE_PEDIDO_IdPedido",
-                table: "DETALLE_PEDIDO",
-                column: "IdPedido");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_DETALLE_PEDIDO_IdReloj",
-                table: "DETALLE_PEDIDO",
+                name: "IX_DETALLE_VENTA_IdReloj",
+                table: "DETALLE_VENTA",
                 column: "IdReloj");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ESTADO_PEDIDO_NombreEstadoPedido",
-                table: "ESTADO_PEDIDO",
-                column: "NombreEstadoPedido",
-                unique: true);
+                name: "IX_DETALLE_VENTA_IdVenta",
+                table: "DETALLE_VENTA",
+                column: "IdVenta");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ESTADO_RELOJ_NombreEstadoReloj",
@@ -534,11 +537,6 @@ namespace Vantiq.Migrations
                 column: "IdConcepto");
 
             migrationBuilder.CreateIndex(
-                name: "IX_KARDEX_IdPedido",
-                table: "KARDEX",
-                column: "IdPedido");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_KARDEX_IdReloj",
                 table: "KARDEX",
                 column: "IdReloj");
@@ -549,9 +547,20 @@ namespace Vantiq.Migrations
                 column: "IdUsuario");
 
             migrationBuilder.CreateIndex(
+                name: "IX_KARDEX_IdVenta",
+                table: "KARDEX",
+                column: "IdVenta");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_MARCA_NombreMarca",
                 table: "MARCA",
                 column: "NombreMarca",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_METODO_PAGO_NombreMetodoPago",
+                table: "METODO_PAGO",
+                column: "NombreMetodoPago",
                 unique: true);
 
             migrationBuilder.CreateIndex(
@@ -570,27 +579,6 @@ namespace Vantiq.Migrations
                 table: "OPCION_MENU",
                 column: "NombreOpcionMenu",
                 unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_PEDIDO_CodigoPedido",
-                table: "PEDIDO",
-                column: "CodigoPedido",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_PEDIDO_IdCliente",
-                table: "PEDIDO",
-                column: "IdCliente");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_PEDIDO_IdEstadoPedido",
-                table: "PEDIDO",
-                column: "IdEstadoPedido");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_PEDIDO_IdUsuario",
-                table: "PEDIDO",
-                column: "IdUsuario");
 
             migrationBuilder.CreateIndex(
                 name: "IX_RELOJ_CodigoSKU",
@@ -652,13 +640,28 @@ namespace Vantiq.Migrations
                 table: "USUARIO_ROL",
                 columns: new[] { "IdUsuario", "IdRol" },
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_VENTA_IdClienteVisitante",
+                table: "VENTA",
+                column: "IdClienteVisitante");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_VENTA_IdMetodoPago",
+                table: "VENTA",
+                column: "IdMetodoPago");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_VENTA_IdUsuario",
+                table: "VENTA",
+                column: "IdUsuario");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "DETALLE_PEDIDO");
+                name: "DETALLE_VENTA");
 
             migrationBuilder.DropTable(
                 name: "KARDEX");
@@ -676,22 +679,16 @@ namespace Vantiq.Migrations
                 name: "CONCEPTO_KARDEX");
 
             migrationBuilder.DropTable(
-                name: "PEDIDO");
+                name: "RELOJ");
 
             migrationBuilder.DropTable(
-                name: "RELOJ");
+                name: "VENTA");
 
             migrationBuilder.DropTable(
                 name: "OPCION_MENU");
 
             migrationBuilder.DropTable(
                 name: "ROL");
-
-            migrationBuilder.DropTable(
-                name: "CLIENTE");
-
-            migrationBuilder.DropTable(
-                name: "ESTADO_PEDIDO");
 
             migrationBuilder.DropTable(
                 name: "ESTADO_RELOJ");
@@ -701,6 +698,12 @@ namespace Vantiq.Migrations
 
             migrationBuilder.DropTable(
                 name: "MODELO_RELOJ");
+
+            migrationBuilder.DropTable(
+                name: "CLIENTE_VISITANTE");
+
+            migrationBuilder.DropTable(
+                name: "METODO_PAGO");
 
             migrationBuilder.DropTable(
                 name: "USUARIO");

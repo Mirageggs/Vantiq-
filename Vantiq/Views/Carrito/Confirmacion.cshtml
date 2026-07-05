@@ -1,8 +1,7 @@
-@model Pedido
+@model Venta
 @{
     ViewData["Title"] = "Pedido registrado";
-    // Usamos directamente la propiedad de cadena única que ya tiene tu modelo
-    var codigo = Model.CodigoPedido;
+    var codigo = Formato.CodigoVenta(Model.IdVenta);
 }
 
 <div class="container py-5">
@@ -15,10 +14,9 @@
                     <p class="eyebrow mb-1">Número de pedido</p>
                     <p class="h4 text-gold font-monospace">@codigo</p>
 
-                    @* Acceso correcto a la tabla relacional ESTADO_PEDIDO *@
                     <p class="my-3">
-                        <span class="estado-pill estado-@(Model.EstadoPedido.NombreEstadoPedido.ToLower())">
-                            @Model.EstadoPedido.NombreEstadoPedido
+                        <span class="estado-pill estado-@(Model.EstadoVenta.ToString().ToLower())">
+                            @Model.EstadoVenta
                         </span>
                     </p>
 
@@ -29,30 +27,23 @@
                         {
                             <div class="d-flex justify-content-between mb-1">
                                 <span class="text-muted-vq">@det.Cantidad × @det.Reloj.CodigoSKU</span>
-                                @* Formateo nativo de moneda para subtotal *@
-                                <span>@string.Format("S/ {0:N2}", det.PrecioUnitario * det.Cantidad)</span>
+                                <span>@Formato.Soles(det.PrecioUnitarioVenta * det.Cantidad)</span>
                             </div>
                         }
                         <hr />
                         <div class="d-flex justify-content-between fw-bold">
                             <span>Total del pedido</span>
-                            @* Actualizado de MontoTotal a Total *@
-                            <span class="text-gold">@string.Format("S/ {0:N2}", Model.Total)</span>
+                            <span class="text-gold">@Formato.Soles(Model.MontoTotal)</span>
                         </div>
-
-                        @* Se comenta temporalmente porque DireccionEnvio no forma parte del modelo Pedido provisto *@
-                        @*
                         <p class="text-muted-vq mt-2 mb-0">
                             <i class="bi bi-geo-alt me-1" aria-hidden="true"></i>@Model.DireccionEnvio
                         </p>
-                        *@
                     </div>
 
                     <div class="alert mt-4 text-start small" style="background: var(--vq-secondary); border:1px solid var(--vq-border);">
                         <i class="bi bi-info-circle text-gold me-1" aria-hidden="true"></i>
-                        Realiza el pago correspondiente y envíanos el
-                        comprobante por WhatsApp indicando tu número de pedido. Al verificarlo, tu pedido pasará
-                        a <strong class="text-gold">Pagado</strong> y prepararemos el envío.
+                        Realiza el pago y envíanos el comprobante por WhatsApp indicando tu número de pedido.
+                        Al verificarlo, tu pedido pasará a <strong class="text-gold">Pagado</strong> y prepararemos el envío.
                     </div>
 
                     <a class="btn btn-gold w-100 mb-2 d-flex align-items-center justify-content-center gap-2"

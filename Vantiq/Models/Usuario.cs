@@ -8,28 +8,27 @@ namespace Vantiq.Models
     public class Usuario
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public ushort IdUsuario { get; set; }
+        public int IdUsuario { get; set; }
 
         [Required(ErrorMessage = "El nombre de usuario es obligatorio")]
         [StringLength(50, MinimumLength = 4)]
-        public string NombreUsuario { get; set; } = null!;      // UNICO
+        public string NombreUsuario { get; set; } = null!;  // ÚNICO
 
         [Required, StringLength(100)]
-        [EmailAddress(ErrorMessage = "Correo electronico no valido")]
-        public string Email { get; set; } = null!;              // UNICO
+        [EmailAddress(ErrorMessage = "Correo electrónico no válido")]
+        public string Email { get; set; } = null!;          // ÚNICO
 
         [Required, StringLength(256)]
-        public string ContraseniaHash { get; set; } = null!;    // hash BCrypt, nunca texto plano
+        public string ContraseniaHash { get; set; } = null!;   // hash BCrypt, nunca texto plano
 
-        public DateTime FechaHoraRegistro { get; set; }         // INMUTABLE (default GETDATE())
-        public DateTime FechaHoraModificacion { get; set; }
+        public DateTime FechaHoraRegistro { get; set; }     // default GETDATE()
+        public DateTime FechaHoraModificacion { get; set; } // default GETDATE()
 
         public bool EstaActivo { get; set; } = true;
 
         // Navegaciones
         public ICollection<UsuarioRol> Roles { get; set; } = new List<UsuarioRol>();
-        public ICollection<Pedido> PedidosGestionados { get; set; } = new List<Pedido>();
+        public ICollection<Venta> Ventas { get; set; } = new List<Venta>();
         public ICollection<Kardex> MovimientosKardex { get; set; } = new List<Kardex>();
-        public Cliente? Cliente { get; set; }                   // 1 : 0..1
     }
 }

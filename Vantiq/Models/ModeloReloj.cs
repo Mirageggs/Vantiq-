@@ -3,19 +3,19 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Vantiq.Models
 {
-    /// <summary>Modelo comercial del reloj (ej. PD-1683), agrupado por categoria.</summary>
+    /// <summary>Modelo comercial del reloj (ej. Navigator), agrupado por categoría.</summary>
     [Table("MODELO_RELOJ")]
     public class ModeloReloj
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public uint IdModeloReloj { get; set; }
+        public int IdModeloReloj { get; set; }
 
         [Required, StringLength(60)]
-        public string NombreModelo { get; set; } = null!;       // UNICO
+        public string NombreModelo { get; set; } = null!;   // ÚNICO
 
-        public ushort IdCategoria { get; set; }
+        public int IdCategoria { get; set; }
 
-        public DateTime FechaHoraRegistro { get; set; }         // INMUTABLE (default GETDATE())
+        public DateTime FechaHoraRegistro { get; set; }     // default GETDATE()
 
         public bool EstaActivo { get; set; } = true;
 
