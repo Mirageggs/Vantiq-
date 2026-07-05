@@ -14,7 +14,7 @@
             <div class="card">
                 <div class="card-body p-4">
                     <h2 class="h6 font-display mb-3">Datos de contacto y envío</h2>
-                    <form asp-action="Checkout" method="post" novalidate>
+                    <form asp-action="Checkout" method="post">
                         <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
                         <div class="row">
                             <div class="col-sm-6 mb-3">
@@ -47,7 +47,13 @@
                         </div>
 
                         <h2 class="h6 font-display mt-4 mb-2">Método de pago</h2>
-                       
+                        <div class="mb-3">
+                            <select asp-for="IdMetodoPago"
+                                    asp-items="@(new SelectList(ViewBag.MetodosPago, "IdMetodoPago", "NombreMetodoPago"))"
+                                    class="form-select">
+                                <option value="0">-- Seleccione un método --</option>
+                            </select>
+                        </div>
                         <span asp-validation-for="IdMetodoPago" class="text-danger small d-block mb-3"></span>
 
                         <button type="submit" class="btn btn-gold w-100 py-2">
@@ -81,3 +87,7 @@
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
