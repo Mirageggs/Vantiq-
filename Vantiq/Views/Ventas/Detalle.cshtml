@@ -1,8 +1,7 @@
-@model Pedido
-@using System.Linq
+@model Venta
 @{
-    ViewData["Title"] = "Venta " + Model.CodigoPedido;
-    var permitidas = (byte[])ViewBag.Permitidas;
+    ViewData["Title"] = "Venta " + Formato.CodigoVenta(Model.IdVenta);
+    var permitidas = (EstadoVenta[])ViewBag.Permitidas;
 }
 
 <div class="container-fluid py-4">
@@ -12,9 +11,9 @@
         <div class="col-lg-10">
             <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
                 <h1 class="font-display mb-0">
-                    Venta <span class="text-gold font-monospace">@Model.CodigoPedido</span>
-                    <span class="estado-pill estado-@(Model.EstadoPedido.NombreEstadoPedido.ToLower()) ms-2">
-                        @Model.EstadoPedido.NombreEstadoPedido
+                    Venta <span class="text-gold font-monospace">@Formato.CodigoVenta(Model.IdVenta)</span>
+                    <span class="estado-pill estado-@(Model.EstadoVenta.ToString().ToLower()) ms-2">
+                        @Model.EstadoVenta
                     </span>
                 </h1>
                 <a class="btn btn-outline-gold btn-sm" asp-action="Index">
@@ -28,27 +27,39 @@
                         <div class="card-body">
                             <h2 class="h6 font-display mb-3">Cliente y envío</h2>
                             <p class="mb-1">
-                                @Model.Cliente.Nombres @Model.Cliente.Apellidos
+                                @Model.ClienteVisitante.NombresCliVisit @Model.ClienteVisitante.ApellidosCliVisit
                                 @if (Model.Usuario != null)
                                 {
-                                    <span class="badge-vq badge-gold ms-1">Gestionado por: @Model.Usuario.NombreUsuario</span>
+                                    <span class="badge-vq badge-gold ms-1">Cuenta: @Model.Usuario.NombreUsuario</span>
                                 }
                             </p>
                             <p class="small text-muted-vq mb-1">
-                                <i class="bi bi-envelope me-1" aria-hidden="true"></i>@Model.Cliente.Email
-                              
+                                <i class="bi bi-envelope me-1" aria-hidden="true"></i>@Model.ClienteVisitante.Email
                             </p>
-                            @* Descomentar si agregas la columna Direccion a tu modelo Pedido o Cliente *@
-                            @* <p class="small text-muted-vq mb-1"><i class="bi bi-geo-alt me-1" aria-hidden="true"></i>@Model.DireccionEnvio</p> *@
+                            @if (!string.IsNullOrEmpty(Model.ClienteVisitante.NumCelular))
+                            {
+                                <p class="small text-muted-vq mb-1">
+                                    <i class="bi bi-whatsapp me-1" aria-hidden="true"></i>@Model.ClienteVisitante.NumCelular
+                                </p>
+                            }
+                            <p class="small text-muted-vq mb-1">
+                                <i class="bi bi-geo-alt me-1" aria-hidden="true"></i>@Model.DireccionEnvio
+                            </p>
+                            @if (!string.IsNullOrEmpty(Model.NumSeguimiento))
+                            {
+                                <p class="small text-muted-vq mb-1">
+                                    <i class="bi bi-truck me-1" aria-hidden="true"></i>Seguimiento: <strong>@Model.NumSeguimiento</strong>
+                                </p>
+                            }
                             <p class="small text-muted-vq mb-0">
-                                <i class="bi bi-calendar3 me-1" aria-hidden="true"></i>@Model.FechaHoraPedido.ToString("dd/MM/yyyy HH:mm")
+                                <i class="bi bi-calendar3 me-1" aria-hidden="true"></i>@Model.FechaHoraVenta.ToString("dd/MM/yyyy HH:mm")
                             </p>
                         </div>
                     </div>
 
                     <div class="card">
                         <div class="card-body">
-                            <h2 class="h6 font-display mb-3">Detalle</h2>
+                            <h2 class="h6 font-display mb-3">Detalle de la venta</h2>
                             <div class="table-responsive">
                                 <table class="table table-vq mb-2">
                                     <thead><tr><th>SKU</th><th>Modelo</th><th>Cant.</th><th>P. unit.</th><th>Subtotal</th></tr></thead>
@@ -59,20 +70,22 @@
                                                 <td class="small font-monospace">@det.Reloj.CodigoSKU</td>
                                                 <td>@det.Reloj.ModeloReloj.NombreModelo</td>
                                                 <td>@det.Cantidad</td>
-                                                @* Se asume que tu DetallePedido maneja la propiedad Precio o similar *@
-                                                <td>@string.Format("S/ {0:N2}", det.PrecioUnitario)</td>
-                                                <td>@string.Format("S/ {0:N2}", det.PrecioUnitario * det.Cantidad)</td>
+                                                <td>@Formato.Soles(det.PrecioUnitarioVenta)</td>
+                                                <td>@Formato.Soles(det.PrecioUnitarioVenta * det.Cantidad)</td>
                                             </tr>
                                         }
                                     </tbody>
                                 </table>
                             </div>
-                            <div class="text-end fw-bold">Total: <span class="precio">@string.Format("S/ {0:N2}", Model.Total)</span></div>
+                            <div class="text-end fw-bold">
+                                Método: <span class="text-muted-vq me-3">@Model.MetodoPago.NombreMetodoPago</span>
+                                Total: <span class="precio">@Formato.Soles(Model.MontoTotal)</span>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                @* Acciones según transiciones permitidas (IDs de ESTADO_PEDIDO) *@
+                @* Acciones según transiciones permitidas *@
                 <div class="col-lg-5">
                     <div class="card">
                         <div class="card-body">
@@ -83,47 +96,51 @@
                                 <p class="text-muted-vq small mb-0">Estado final: no admite más transiciones.</p>
                             }
 
-                            @if (Array.Exists(permitidas, e => e == 2))
+                            @if (Array.Exists(permitidas, e => e == EstadoVenta.Pagado))
                             {
                                 <form asp-action="CambiarEstado" method="post" class="mb-2">
-                                    <input type="hidden" name="idPedido" value="@Model.IdPedido" />
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="idVenta" value="@Model.IdVenta" />
                                     <input type="hidden" name="nuevoEstado" value="2" />
                                     <button class="btn btn-gold w-100">
-                                        <i class="bi bi-cash-coin me-1" aria-hidden="true"></i> Pago verificado: marcar PAGADO
+                                        <i class="bi bi-cash-coin me-1" aria-hidden="true"></i>Pago verificado: marcar PAGADO
                                     </button>
                                 </form>
                             }
 
-                            @if (Array.Exists(permitidas, e => e == 2))
+                            @if (Array.Exists(permitidas, e => e == EstadoVenta.Enviado))
                             {
                                 <form asp-action="CambiarEstado" method="post" class="mb-2">
-                                    <input type="hidden" name="idPedido" value="@Model.IdPedido" />
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="idVenta" value="@Model.IdVenta" />
                                     <input type="hidden" name="nuevoEstado" value="3" />
                                     <button class="btn btn-gold w-100">
-                                        <i class="bi bi-truck me-1" aria-hidden="true"></i> Despachar: marcar ENVIADO
+                                        <i class="bi bi-truck me-1" aria-hidden="true"></i>Despachar: marcar ENVIADO
                                     </button>
                                 </form>
                             }
 
-                            @if (Array.Exists(permitidas, e => e == 2))
+                            @if (Array.Exists(permitidas, e => e == EstadoVenta.Entregado))
                             {
                                 <form asp-action="CambiarEstado" method="post" class="mb-2">
-                                    <input type="hidden" name="idPedido" value="@Model.IdPedido" />
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="idVenta" value="@Model.IdVenta" />
                                     <input type="hidden" name="nuevoEstado" value="4" />
                                     <button class="btn btn-gold w-100">
-                                        <i class="bi bi-patch-check me-1" aria-hidden="true"></i> Cliente recibió: marcar ENTREGADO
+                                        <i class="bi bi-patch-check me-1" aria-hidden="true"></i>Cliente recibió: marcar ENTREGADO
                                     </button>
                                 </form>
                             }
 
-                            @if (Array.Exists(permitidas, e => e == 2))
+                            @if (Array.Exists(permitidas, e => e == EstadoVenta.Cancelado))
                             {
                                 <form asp-action="CambiarEstado" method="post"
                                       onsubmit="return confirm('Cancelar la venta repone el stock vía kardex. ¿Continuar?');">
-                                    <input type="hidden" name="idPedido" value="@Model.IdPedido" />
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="idVenta" value="@Model.IdVenta" />
                                     <input type="hidden" name="nuevoEstado" value="5" />
                                     <button class="btn btn-outline-gold w-100 text-danger border-danger">
-                                        <i class="bi bi-x-circle me-1" aria-hidden="true"></i> Cancelar venta (repone stock)
+                                        <i class="bi bi-x-circle me-1" aria-hidden="true"></i>Cancelar venta (repone stock)
                                     </button>
                                 </form>
                             }

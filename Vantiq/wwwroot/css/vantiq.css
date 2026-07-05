@@ -1,0 +1,641 @@
+/* ============================================================
+   VANTIQ — Design System CSS
+   Tema oscuro premium de relojería | Bootstrap 5 overrides
+   Tokens: https://www.figma.com/file/vantiq-ds
+   ============================================================ */
+
+/* ── 1. TOKENS ─────────────────────────────────────────────── */
+:root {
+  --vq-bg:        #0F0E0C;
+  --vq-bg-2:      #131210;
+  --vq-card:      #1A1815;
+  --vq-border:    #2B2721;
+  --vq-gold:      #C8A96E;
+  --vq-gold-dark: #a8894f;
+  --vq-text:      #F2EEE6;
+  --vq-muted:     #7A7570;
+  --vq-secondary: #1A1815;
+
+  /* Bootstrap overrides */
+  --bs-body-bg:          var(--vq-bg);
+  --bs-body-color:       var(--vq-text);
+  --bs-border-color:     var(--vq-border);
+  --bs-card-bg:          var(--vq-card);
+  --bs-card-border-color: var(--vq-border);
+  --bs-dropdown-bg:      var(--vq-card);
+  --bs-dropdown-border-color: var(--vq-border);
+  --bs-dropdown-link-color: var(--vq-text);
+  --bs-dropdown-link-hover-bg: var(--vq-border);
+  --bs-input-bg:         var(--vq-bg-2);
+  --bs-link-color:       var(--vq-gold);
+  --bs-link-hover-color: #d4bc89;
+}
+
+/* ── 2. BASE ────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background: var(--vq-bg);
+  color: var(--vq-text);
+  line-height: 1.6;
+}
+
+/* Foco visible dorado — accesibilidad */
+:focus-visible {
+  outline: 2px solid var(--vq-gold);
+  outline-offset: 3px;
+}
+
+/* ── 3. TIPOGRAFÍA ──────────────────────────────────────────── */
+.font-display { font-family: 'Playfair Display', Georgia, serif; }
+
+.eyebrow {
+  font-size: .7rem;
+  font-weight: 600;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--vq-muted);
+}
+
+.text-gold       { color: var(--vq-gold) !important; }
+.text-muted-vq   { color: var(--vq-muted) !important; }
+.tracking-wide   { letter-spacing: .1em; }
+.border-vq       { border-color: var(--vq-border) !important; }
+
+/* ── 4. BARRA SUPERIOR ──────────────────────────────────────── */
+.topbar {
+  background: var(--vq-bg-2);
+  border-bottom: 1px solid var(--vq-border);
+  font-size: .72rem;
+  color: var(--vq-muted);
+  letter-spacing: .06em;
+}
+
+/* ── 5. HEADER / NAVBAR ─────────────────────────────────────── */
+.header-vantiq {
+  background: rgba(15,14,12,.96);
+  border-bottom: 1px solid var(--vq-border);
+  backdrop-filter: blur(12px);
+  position: sticky;
+  top: 0;
+  z-index: 1030;
+}
+
+.brand-vantiq {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.55rem;
+  font-weight: 700;
+  color: var(--vq-gold);
+  letter-spacing: .08em;
+  text-decoration: none;
+  line-height: 1;
+  transition: opacity .2s;
+}
+.brand-vantiq:hover { opacity: .8; color: var(--vq-gold); }
+.brand-vantiq sup   { font-size: .45em; vertical-align: super; }
+
+/* Buscador dorado */
+.search-vq .form-control {
+  background: var(--vq-bg-2);
+  border-color: var(--vq-border);
+  color: var(--vq-text);
+  transition: border-color .2s, box-shadow .2s;
+}
+.search-vq .form-control:focus {
+  border-color: var(--vq-gold);
+  box-shadow: 0 0 0 3px rgba(200,169,110,.15);
+  background: var(--vq-bg-2);
+  color: var(--vq-text);
+}
+.search-vq .input-group-text {
+  background: var(--vq-bg-2);
+  border-color: var(--vq-border);
+}
+
+/* ── 6. NAVEGACIÓN DE CATEGORÍAS ────────────────────────────── */
+.nav-categorias {
+  background: var(--vq-bg-2);
+  border-bottom: 1px solid var(--vq-border);
+  position: sticky;
+  top: 57px;
+  z-index: 1020;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+.nav-categorias::-webkit-scrollbar { height: 2px; }
+.nav-categorias::-webkit-scrollbar-thumb { background: var(--vq-border); }
+
+.cat-link {
+  font-size: .78rem;
+  font-weight: 500;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--vq-muted);
+  text-decoration: none;
+  padding: .3rem .75rem;
+  border-radius: 2rem;
+  transition: color .2s, background .2s;
+  display: inline-block;
+}
+.cat-link:hover { color: var(--vq-gold); }
+.cat-link.activo {
+  color: var(--vq-gold);
+  background: rgba(200,169,110,.12);
+}
+
+/* ── 7. BARRA DE ADMINISTRACIÓN ─────────────────────────────── */
+.nav-admin {
+  background: #100f0d;
+  border-bottom: 1px solid var(--vq-gold);
+  font-size: .78rem;
+}
+.admin-brand {
+  font-family: 'Playfair Display', serif;
+  color: var(--vq-gold);
+  text-decoration: none;
+  font-weight: 700;
+  letter-spacing: .1em;
+}
+.admin-link {
+  color: var(--vq-muted);
+  text-decoration: none;
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  padding: .25rem .5rem;
+  border-radius: 3px;
+  transition: color .2s;
+}
+.admin-link:hover { color: var(--vq-gold); }
+
+/* ── 8. BOTONES ─────────────────────────────────────────────── */
+.btn-gold {
+  background: var(--vq-gold);
+  color: #0F0E0C;
+  border: none;
+  font-weight: 600;
+  letter-spacing: .04em;
+  transition: background .2s, transform .15s, box-shadow .2s;
+  border-radius: 4px;
+}
+.btn-gold:hover, .btn-gold:focus {
+  background: #d4bc89;
+  color: #0F0E0C;
+  box-shadow: 0 4px 16px rgba(200,169,110,.35);
+}
+.btn-gold:active  { transform: scale(.97); }
+.btn-gold:disabled { opacity: .45; pointer-events: none; }
+
+.btn-outline-gold {
+  border: 1px solid var(--vq-gold);
+  color: var(--vq-gold);
+  background: transparent;
+  font-weight: 600;
+  letter-spacing: .04em;
+  transition: background .2s, color .2s, box-shadow .2s;
+  border-radius: 4px;
+}
+.btn-outline-gold:hover, .btn-outline-gold:focus {
+  background: rgba(200,169,110,.12);
+  color: var(--vq-gold);
+  border-color: var(--vq-gold);
+  box-shadow: 0 2px 12px rgba(200,169,110,.2);
+}
+
+.btn-ghost {
+  background: transparent;
+  border: none;
+  color: var(--vq-text);
+  transition: color .2s;
+}
+.btn-ghost:hover, .btn-ghost:focus { color: var(--vq-gold); }
+
+/* Badge carrito */
+.bg-gold { background: var(--vq-gold) !important; color: #0F0E0C !important; }
+
+/* ── 9. FORMULARIOS (dark inputs, focus dorado) ─────────────── */
+.form-control, .form-select {
+  background: var(--vq-bg-2);
+  border-color: var(--vq-border);
+  color: var(--vq-text);
+  border-radius: 4px;
+}
+.form-control:focus, .form-select:focus {
+  background: var(--vq-bg-2);
+  border-color: var(--vq-gold);
+  box-shadow: 0 0 0 3px rgba(200,169,110,.18);
+  color: var(--vq-text);
+}
+.form-control::placeholder { color: var(--vq-muted); }
+.input-group-text {
+  background: var(--vq-bg-2);
+  border-color: var(--vq-border);
+  color: var(--vq-muted);
+}
+
+/* ── 10. CARDS ──────────────────────────────────────────────── */
+.card {
+  background: var(--vq-card);
+  border: 1px solid var(--vq-border);
+  border-radius: 8px;
+}
+.card-body { padding: 1.25rem; }
+
+/* ── 11. HERO CINEMATOGRÁFICO ───────────────────────────────── */
+.hero-vantiq {
+  position: relative;
+  overflow: hidden;
+  min-height: 520px;
+  display: flex;
+  align-items: center;
+}
+
+.hero-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  filter: brightness(.35) saturate(.7);
+  z-index: 0;
+}
+
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    rgba(15,14,12,.92) 40%,
+    rgba(15,14,12,.55) 75%,
+    rgba(200,169,110,.08) 100%
+  );
+  z-index: 1;
+}
+
+.hero-vantiq .container { position: relative; z-index: 2; }
+
+.hero-title {
+  font-size: clamp(2.2rem, 6vw, 4rem);
+  font-weight: 800;
+  line-height: 1.1;
+  color: var(--vq-text);
+}
+
+.hero-stat {
+  font-size: 2.4rem;
+  font-weight: 700;
+  color: var(--vq-gold);
+  line-height: 1;
+}
+
+/* ── 12. FRANJA DE CONFIANZA ────────────────────────────────── */
+.trust-strip {
+  background: var(--vq-bg-2);
+  border-top: 1px solid var(--vq-border);
+  border-bottom: 1px solid var(--vq-border);
+}
+
+.trust-ico {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.4rem;
+  height: 2.4rem;
+  border-radius: 50%;
+  background: rgba(200,169,110,.1);
+  color: var(--vq-gold);
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+/* ── 13. TARJETAS DE PRODUCTO ───────────────────────────────── */
+.card-produto {
+  background: var(--vq-card);
+  border: 1px solid var(--vq-border);
+  border-radius: 8px;
+  overflow: hidden;
+  transition: border-color .25s, box-shadow .25s, transform .25s;
+}
+.card-produto:hover {
+  border-color: rgba(200,169,110,.4);
+  box-shadow: 0 8px 32px rgba(0,0,0,.45), 0 0 0 1px rgba(200,169,110,.12);
+  transform: translateY(-3px);
+}
+
+/* Imagen 1:1 con zoom en hover */
+.card-produto .foto {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 1 / 1;
+  background: var(--vq-bg-2);
+}
+.card-produto .foto img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform .4s cubic-bezier(.25,.46,.45,.94);
+  display: block;
+}
+.card-produto:hover .foto img { transform: scale(1.07); }
+
+/* Precio dorado */
+.precio {
+  color: var(--vq-gold);
+  font-family: 'Playfair Display', serif;
+  font-weight: 700;
+  font-size: 1.15rem;
+}
+
+/* Stock indicators */
+.stock-ok   { color: #4caf50; }
+.stock-bajo { color: #ffa726; }
+.stock-cero { color: #ef5350; }
+
+/* ── 14. BADGES ─────────────────────────────────────────────── */
+.badge-vq {
+  display: inline-block;
+  padding: .2rem .6rem;
+  font-size: .68rem;
+  font-weight: 700;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  border-radius: 3px;
+  line-height: 1.4;
+}
+.badge-gold   { background: rgba(200,169,110,.18); color: var(--vq-gold); }
+.badge-danger { background: rgba(239,83,80,.18);  color: #ef5350; }
+.badge-warn   { background: rgba(255,167,38,.18); color: #ffa726; }
+
+/* ── 15. PILLS DE ESTADO DE VENTA ───────────────────────────── */
+.estado-pill {
+  display: inline-block;
+  padding: .25rem .75rem;
+  border-radius: 2rem;
+  font-size: .72rem;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.estado-pendiente  { background: rgba(255,193,7,.15);  color: #ffc107; }
+.estado-pagado     { background: rgba(33,150,243,.15); color: #42a5f5; }
+.estado-enviado    { background: rgba(0,188,212,.15);  color: #26c6da; }
+.estado-entregado  { background: rgba(76,175,80,.15);  color: #66bb6a; }
+.estado-cancelado  { background: rgba(239,83,80,.15);  color: #ef5350; }
+
+/* ── 16. ACCESO (Login / Registro) ─────────────────────────── */
+.auth-tab {
+  flex: 1;
+  text-align: center;
+  padding: .5rem;
+  border-radius: 4px;
+  font-size: .82rem;
+  font-weight: 600;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  color: var(--vq-muted);
+  text-decoration: none;
+  cursor: pointer;
+  transition: background .2s, color .2s;
+  display: block;
+}
+.auth-tab:hover { color: var(--vq-gold); }
+.auth-tab.activa {
+  background: var(--vq-card);
+  color: var(--vq-gold);
+  box-shadow: 0 1px 4px rgba(0,0,0,.4);
+}
+
+/* ── 17. PANEL ADMINISTRADOR ────────────────────────────────── */
+
+/* Layout de 2 columnas sidebar + contenido */
+.admin-shell { min-height: 70vh; }
+
+/* Sidebar */
+.admin-sidebar {
+  background: var(--vq-card);
+  border: 1px solid var(--vq-border);
+  border-radius: 8px;
+  padding: 1.25rem;
+  position: sticky;
+  top: 110px;
+}
+.admin-side-link {
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  padding: .55rem .75rem;
+  border-radius: 5px;
+  color: var(--vq-muted);
+  text-decoration: none;
+  font-size: .85rem;
+  font-weight: 500;
+  transition: background .2s, color .2s;
+}
+.admin-side-link:hover { background: rgba(200,169,110,.08); color: var(--vq-gold); }
+.admin-side-link.activo {
+  background: rgba(200,169,110,.12);
+  color: var(--vq-gold);
+  font-weight: 600;
+}
+
+/* KPI Cards */
+.kpi-card {
+  background: var(--vq-card);
+  border: 1px solid var(--vq-border);
+  border-radius: 8px;
+  transition: border-color .2s, box-shadow .2s;
+}
+.kpi-card:hover {
+  border-color: rgba(200,169,110,.25);
+  box-shadow: 0 4px 16px rgba(0,0,0,.3);
+}
+.kpi-label {
+  font-size: .7rem;
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--vq-muted);
+}
+.kpi-value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--vq-text);
+  line-height: 1.1;
+}
+
+/* Íconos coloreados por KPI */
+.kpi-ico {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.4rem;
+  height: 2.4rem;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+.kpi-ico.green  { background: rgba(76,175,80,.15);   color: #66bb6a; }
+.kpi-ico.blue   { background: rgba(33,150,243,.15);  color: #42a5f5; }
+.kpi-ico.yellow { background: rgba(255,193,7,.15);   color: #ffd54f; }
+.kpi-ico.purple { background: rgba(156,39,176,.15);  color: #ba68c8; }
+
+/* ── 18. TABLAS ADMIN ───────────────────────────────────────── */
+.table-vq {
+  color: var(--vq-text);
+  border-color: var(--vq-border);
+  --bs-table-bg: transparent;
+  --bs-table-border-color: var(--vq-border);
+  --bs-table-hover-bg: rgba(200,169,110,.05);
+  --bs-table-striped-bg: rgba(255,255,255,.02);
+}
+.table-vq thead th {
+  font-size: .7rem;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--vq-muted);
+  border-bottom: 1px solid var(--vq-border);
+  padding-bottom: .75rem;
+}
+.table-vq tbody td {
+  vertical-align: middle;
+  border-color: rgba(43,39,33,.7);
+  padding: .7rem .75rem;
+}
+
+/* Toolbar (buscador + pills) */
+.table-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .5rem;
+}
+
+/* ── 19. DROPDOWN MENU (dark) ───────────────────────────────── */
+.dropdown-menu {
+  background: var(--vq-card);
+  border: 1px solid var(--vq-border);
+  border-radius: 6px;
+  box-shadow: 0 8px 32px rgba(0,0,0,.5);
+  min-width: 14rem;
+}
+.dropdown-item {
+  color: var(--vq-text);
+  font-size: .875rem;
+  padding: .5rem 1rem;
+  transition: background .15s;
+}
+.dropdown-item:hover, .dropdown-item:focus {
+  background: rgba(200,169,110,.1);
+  color: var(--vq-gold);
+}
+.dropdown-divider { border-color: var(--vq-border); }
+
+/* ── 20. BREADCRUMB ─────────────────────────────────────────── */
+.breadcrumb-item + .breadcrumb-item::before { color: var(--vq-muted); }
+.breadcrumb-item a { color: var(--vq-gold); text-decoration: none; }
+.breadcrumb-item.active { color: var(--vq-muted); }
+
+/* ── 21. FOOTER ─────────────────────────────────────────────── */
+.footer-vantiq {
+  background: var(--vq-bg-2);
+  border-top: 1px solid var(--vq-border);
+  color: var(--vq-muted);
+  font-size: .82rem;
+}
+.footer-vantiq .brand-vantiq { font-size: 1.2rem; }
+
+/* ── 22. BOTÓN FLOTANTE WHATSAPP ────────────────────────────── */
+.whatsapp-float {
+  position: fixed;
+  bottom: 1.75rem;
+  right: 1.75rem;
+  z-index: 1050;
+  width: 3.25rem;
+  height: 3.25rem;
+  border-radius: 50%;
+  background: #25d366;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  box-shadow: 0 4px 20px rgba(37,211,102,.45);
+  text-decoration: none;
+  transition: transform .2s, box-shadow .2s;
+}
+.whatsapp-float:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 28px rgba(37,211,102,.6);
+  color: #fff;
+}
+
+/* ── 23. TOASTS ─────────────────────────────────────────────── */
+.toast-container-vq {
+  position: fixed;
+  bottom: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1060;
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+  width: min(420px, 92vw);
+}
+
+.toast-vq {
+  background: var(--vq-card);
+  border: 1px solid var(--vq-border);
+  border-left: 4px solid var(--vq-muted);
+  border-radius: 6px;
+  padding: .85rem 1rem;
+  box-shadow: 0 6px 24px rgba(0,0,0,.5);
+  animation: slideUp .3s ease;
+}
+.toast-vq.ok    { border-left-color: #4caf50; }
+.toast-vq.error { border-left-color: #ef5350; }
+.toast-vq.warn  { border-left-color: #ffa726; }
+
+@keyframes slideUp {
+  from { transform: translateY(12px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+
+/* ── 24. HORIZONTAL RULE ────────────────────────────────────── */
+hr { border-color: var(--vq-border); opacity: 1; }
+
+/* ── 25. SCROLLBAR (webkit) ─────────────────────────────────── */
+::-webkit-scrollbar       { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--vq-bg); }
+::-webkit-scrollbar-thumb { background: var(--vq-border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--vq-muted); }
+
+/* ── 26. SELECCIÓN DE TEXTO ─────────────────────────────────── */
+::selection { background: rgba(200,169,110,.3); color: var(--vq-text); }
+
+/* ── 27. INVENTARIO / KARDEX ────────────────────────────────── */
+.kardex-entrada { color: #66bb6a; }
+.kardex-salida  { color: #ef5350; }
+
+/* ── 28. RESPONSIVE ─────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .hero-vantiq    { min-height: 360px; }
+  .hero-title     { font-size: 2rem; }
+  .kpi-value      { font-size: 1.5rem; }
+  .admin-sidebar  { display: none; }    /* colapsado en móvil */
+  .whatsapp-float { bottom: 1rem; right: 1rem; }
+  .toast-container-vq { bottom: 1rem; }
+}
+
+@media (min-width: 992px) {
+  .admin-sidebar { display: block !important; }
+}
+
+/* ── 29. UTILIDADES EXTRA ───────────────────────────────────── */
+.min-w-0      { min-width: 0; }
+.object-cover { object-fit: cover; }

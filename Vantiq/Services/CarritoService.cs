@@ -55,7 +55,7 @@ namespace Vantiq.Services
             {
                 items.Add(new ItemCarrito
                 {
-                    IdReloj = (int)reloj.IdReloj,
+                    IdReloj = reloj.IdReloj,
                     CodigoSKU = reloj.CodigoSKU,
                     Nombre = reloj.ModeloReloj.NombreModelo + " " + reloj.Marca.NombreMarca,
                     UrlImagen = reloj.UrlImagen,

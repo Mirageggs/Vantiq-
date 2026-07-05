@@ -2,28 +2,18 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
-using Vantiq.Data; // Asegúrate de que el namespace de tu DbContext sea correcto
+using Vantiq.Data;
 using Vantiq.Models;
 
 namespace Vantiq.Controllers
 {
     public class VentasController : Controller
     {
-        // Replicamos los IDs de tu tabla ESTADO_PEDIDO para usarlos en la lógica
-        public static class EstadosPedido
+        private static readonly Dictionary<EstadoVenta, EstadoVenta[]> Transiciones = new()
         {
-            public const byte Pendiente = 1;
-            public const byte Pagado = 2;
-            public const byte Enviado = 3;
-            public const byte Entregado = 4;
-            public const byte Cancelado = 5;
-        }
-
-        private static readonly Dictionary<byte, byte[]> Transiciones = new()
-        {
-            [EstadosPedido.Pendiente] = new[] { EstadosPedido.Pagado, EstadosPedido.Cancelado },
-            [EstadosPedido.Pagado] = new[] { EstadosPedido.Enviado, EstadosPedido.Cancelado },
-            [EstadosPedido.Enviado] = new[] { EstadosPedido.Entregado }
+            [EstadoVenta.Pendiente] = new[] { EstadoVenta.Pagado,    EstadoVenta.Cancelado },
+            [EstadoVenta.Pagado]    = new[] { EstadoVenta.Enviado,   EstadoVenta.Cancelado },
+            [EstadoVenta.Enviado]   = new[] { EstadoVenta.Entregado }
         };
 
         private readonly VantiqDbContext _db;
@@ -33,113 +23,110 @@ namespace Vantiq.Controllers
         [HttpGet]
         public async Task<IActionResult> Index(byte? estado)
         {
-            var consulta = _db.Pedidos
-                .Include(p => p.Cliente)
-                .Include(p => p.Usuario)
-                .Include(p => p.EstadoPedido)
+            var consulta = _db.Ventas
+                .Include(v => v.ClienteVisitante)
+                .Include(v => v.Usuario)
                 .AsQueryable();
 
             if (estado.HasValue)
-                consulta = consulta.Where(p => p.IdEstadoPedido == estado.Value);
+                consulta = consulta.Where(v => v.EstadoVenta == (EstadoVenta)estado.Value);
 
             ViewBag.Estado = estado;
-            ViewBag.Conteos = await _db.Pedidos
-                .GroupBy(p => p.IdEstadoPedido)
+            ViewBag.Conteos = await _db.Ventas
+                .GroupBy(v => (byte)v.EstadoVenta)
                 .Select(g => new { Estado = g.Key, Total = g.Count() })
                 .ToDictionaryAsync(x => x.Estado, x => x.Total);
 
-            return View(await consulta.OrderByDescending(p => p.FechaHoraPedido).ToListAsync());
+            return View(await consulta.OrderByDescending(v => v.FechaHoraVenta).ToListAsync());
         }
 
         [Authorize(Roles = "Administrador")]
         [HttpGet]
-        public async Task<IActionResult> Detalle(uint id)
+        public async Task<IActionResult> Detalle(int id)
         {
-            var pedido = await _db.Pedidos
-                .Include(p => p.Cliente)
-                .Include(p => p.Usuario)
-                .Include(p => p.EstadoPedido)
-                .Include(p => p.Detalles).ThenInclude(d => d.Reloj).ThenInclude(r => r.ModeloReloj)
-                .FirstOrDefaultAsync(p => p.IdPedido == id);
+            var venta = await _db.Ventas
+                .Include(v => v.ClienteVisitante)
+                .Include(v => v.Usuario)
+                .Include(v => v.MetodoPago)
+                .Include(v => v.Detalles).ThenInclude(d => d.Reloj).ThenInclude(r => r.ModeloReloj)
+                .FirstOrDefaultAsync(v => v.IdVenta == id);
 
-            if (pedido == null) return NotFound();
+            if (venta == null) return NotFound();
 
-            ViewBag.Permitidas = Transiciones.TryGetValue(pedido.IdEstadoPedido, out var siguientes)
+            ViewBag.Permitidas = Transiciones.TryGetValue(venta.EstadoVenta, out var siguientes)
                 ? siguientes
-                : Array.Empty<byte>();
+                : Array.Empty<EstadoVenta>();
 
-            return View(pedido);
+            return View(venta);
         }
 
         [Authorize(Roles = "Administrador")]
         [HttpPost, ValidateAntiForgeryToken]
-        public async Task<IActionResult> CambiarEstado(uint idPedido, byte nuevoEstado)
+        public async Task<IActionResult> CambiarEstado(int idVenta, byte nuevoEstado)
         {
-            var pedido = await _db.Pedidos
-                .Include(p => p.Detalles).ThenInclude(d => d.Reloj)
-                .FirstOrDefaultAsync(p => p.IdPedido == idPedido);
+            var venta = await _db.Ventas
+                .Include(v => v.Detalles).ThenInclude(d => d.Reloj)
+                .FirstOrDefaultAsync(v => v.IdVenta == idVenta);
 
-            if (pedido == null) return NotFound();
+            if (venta == null) return NotFound();
 
-            var valida = Transiciones.TryGetValue(pedido.IdEstadoPedido, out var siguientes)
-                         && siguientes.Contains(nuevoEstado);
+            var nuevoEstadoEnum = (EstadoVenta)nuevoEstado;
+            var valida = Transiciones.TryGetValue(venta.EstadoVenta, out var siguientes)
+                         && siguientes.Contains(nuevoEstadoEnum);
+
             if (!valida)
             {
-                TempData["error"] = $"Transición no permitida.";
-                return RedirectToAction(nameof(Detalle), new { id = idPedido });
+                TempData["error"] = "Transición no permitida.";
+                return RedirectToAction(nameof(Detalle), new { id = idVenta });
             }
 
-            if (nuevoEstado == EstadosPedido.Cancelado)
+            if (nuevoEstadoEnum == EstadoVenta.Cancelado)
             {
                 using var tx = await _db.Database.BeginTransactionAsync();
+                var idAdmin = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
-                // Parseo a ushort porque IdUsuario en Pedido es ushort
-                var idAdmin = ushort.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-
-                foreach (var det in pedido.Detalles)
+                foreach (var det in venta.Detalles)
                 {
                     det.Reloj.StockActual += det.Cantidad;
                     if (det.Reloj.IdEstadoReloj == 2) det.Reloj.IdEstadoReloj = 1;
 
                     _db.MovimientosKardex.Add(new Kardex
                     {
-                        IdUsuario = idAdmin,
-                        IdConcepto = 3,
-                        IdReloj = det.IdReloj,
-                        IdPedido = pedido.IdPedido, // Actualizado de IdVenta a IdPedido
-                        Cantidad = det.Cantidad,
+                        IdUsuario       = idAdmin,
+                        IdConcepto      = 3,        // Devolución de cliente
+                        IdReloj         = det.IdReloj,
+                        IdVenta         = venta.IdVenta,
+                        Cantidad        = det.Cantidad,
                         StockResultante = det.Reloj.StockActual
                     });
                 }
-                pedido.IdEstadoPedido = EstadosPedido.Cancelado;
+                venta.EstadoVenta = EstadoVenta.Cancelado;
                 await _db.SaveChangesAsync();
                 await tx.CommitAsync();
             }
             else
             {
-                pedido.IdEstadoPedido = nuevoEstado;
+                venta.EstadoVenta = nuevoEstadoEnum;
                 await _db.SaveChangesAsync();
             }
 
-            TempData["ok"] = $"El pedido pasó al estado {nuevoEstado}.";
-            return RedirectToAction(nameof(Detalle), new { id = idPedido });
+            TempData["ok"] = $"La venta pasó al estado {nuevoEstadoEnum}.";
+            return RedirectToAction(nameof(Detalle), new { id = idVenta });
         }
 
         [Authorize]
         [HttpGet]
         public async Task<IActionResult> MisCompras()
         {
-            // El ID extraído del token JWT pertenece al Cliente comprador
-            var idCliente = uint.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-
-            var pedidos = await _db.Pedidos
-                .Include(p => p.EstadoPedido)
-                .Include(p => p.Detalles).ThenInclude(d => d.Reloj)
-                .Where(p => p.IdCliente == idCliente)
-                .OrderByDescending(p => p.FechaHoraPedido)
+            var idUsuario = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+            var ventas = await _db.Ventas
+                .Include(v => v.MetodoPago)
+                .Include(v => v.Detalles).ThenInclude(d => d.Reloj)
+                .Where(v => v.IdUsuario == idUsuario)
+                .OrderByDescending(v => v.FechaHoraVenta)
                 .ToListAsync();
 
-            return View(pedidos);
+            return View(ventas);
         }
     }
 }

@@ -1,4 +1,5 @@
 wwwroot\css\site.css
+wwwroot\css\vantiq.css
 wwwroot\favicon.ico
 wwwroot\js\site.js
 wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css
@@ -123,3 +124,4 @@ C:\Users\ajaeg\OneDrive\Escritorio\hoy\Vantiq\Vantiq\wwwroot\lib\jquery\dist\jqu
 C:\Users\ajaeg\OneDrive\Escritorio\hoy\Vantiq\Vantiq\wwwroot\lib\jquery\dist\jquery.slim.min.js
 C:\Users\ajaeg\OneDrive\Escritorio\hoy\Vantiq\Vantiq\wwwroot\lib\jquery\dist\jquery.slim.min.map
 C:\Users\ajaeg\OneDrive\Escritorio\hoy\Vantiq\Vantiq\wwwroot\lib\jquery\LICENSE.txt
+C:\Users\ajaeg\OneDrive\Escritorio\hoy\Vantiq\Vantiq\wwwroot\css\vantiq.css

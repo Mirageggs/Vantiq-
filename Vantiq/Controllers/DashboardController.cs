@@ -8,8 +8,7 @@ using Vantiq.ViewModels;
 namespace Vantiq.Controllers
 {
     /// <summary>
-    /// Panel de control del Administrador: KPIs y graficos interactivos
-    /// (Chart.js) en reemplazo de los reportes estaticos tradicionales.
+    /// Panel de control del Administrador: KPIs y gráficos interactivos (Chart.js).
     /// </summary>
     [Authorize(Roles = "Administrador")]
     public class DashboardController : Controller
@@ -21,23 +20,20 @@ namespace Vantiq.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var hoy = DateTime.Today;
+            var hoy       = DateTime.Today;
             var inicioMes = new DateTime(hoy.Year, hoy.Month, 1);
-            var hace30 = hoy.AddDays(-29);
+            var hace30    = hoy.AddDays(-29);
 
-            // CORRECCIÓN: Tabla Pedidos y validación por IdEstadoPedido (5 = Cancelado)
-            var ventasValidas = _db.Pedidos.Where(p => p.IdEstadoPedido != 5);
+            var ventasValidas = _db.Ventas.Where(v => v.EstadoVenta != EstadoVenta.Cancelado);
 
             var vm = new DashboardViewModel
             {
-                // CORRECCIÓN: FechaHoraPedido y Total
                 VentasDelMes = await ventasValidas
-                    .Where(p => p.FechaHoraPedido >= inicioMes)
-                    .SumAsync(p => (decimal?)p.Total) ?? 0,
+                    .Where(v => v.FechaHoraVenta >= inicioMes)
+                    .SumAsync(v => (decimal?)v.MontoTotal) ?? 0,
 
-                // CORRECCIÓN: Tabla Pedidos y validación (1 = Pendiente)
-                VentasPendientes = await _db.Pedidos
-                    .CountAsync(p => p.IdEstadoPedido == 1),
+                VentasPendientes = await _db.Ventas
+                    .CountAsync(v => v.EstadoVenta == EstadoVenta.Pendiente),
 
                 ClientesRegistrados = await _db.UsuariosRoles
                     .CountAsync(ur => ur.IdRol == 2 && ur.Usuario.EstaActivo),
@@ -50,11 +46,11 @@ namespace Vantiq.Controllers
                     .ToListAsync()
             };
 
-            // Serie: ventas por dia (ultimos 30 dias, incluye dias en cero)
+            // Serie: ventas por día (últimos 30 días, incluye días en cero)
             var porDia = await ventasValidas
-                .Where(p => p.FechaHoraPedido >= hace30)
-                .GroupBy(p => p.FechaHoraPedido.Date)
-                .Select(g => new { Fecha = g.Key, Total = g.Sum(x => x.Total) })
+                .Where(v => v.FechaHoraVenta >= hace30)
+                .GroupBy(v => v.FechaHoraVenta.Date)
+                .Select(g => new { Fecha = g.Key, Total = g.Sum(x => x.MontoTotal) })
                 .ToListAsync();
 
             vm.VentasPorDia = Enumerable.Range(0, 30)
@@ -64,10 +60,9 @@ namespace Vantiq.Controllers
                     porDia.FirstOrDefault(p => p.Fecha == d)?.Total ?? 0))
                 .ToList();
 
-            // Top 5 relojes mas vendidos (unidades)
-            // CORRECCIÓN: Tabla DetallesPedido e IdEstadoPedido != 5
-            vm.TopRelojes = (await _db.DetallesPedido
-                    .Where(d => d.Pedido.IdEstadoPedido != 5)
+            // Top 5 relojes más vendidos (unidades, excluye ventas canceladas)
+            vm.TopRelojes = (await _db.DetallesVenta
+                    .Where(d => d.Venta.EstadoVenta != EstadoVenta.Cancelado)
                     .GroupBy(d => d.Reloj.CodigoSKU)
                     .Select(g => new { Sku = g.Key, Unidades = g.Sum(x => (int)x.Cantidad) })
                     .OrderByDescending(x => x.Unidades)

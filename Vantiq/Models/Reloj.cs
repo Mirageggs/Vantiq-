@@ -4,24 +4,24 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Vantiq.Models
 {
-    /// <summary>Producto del catalogo. El stock se sincroniza con KARDEX.</summary>
+    /// <summary>Producto del catálogo. El stock se sincroniza con KARDEX.</summary>
     [Table("RELOJ")]
     public class Reloj
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public uint IdReloj { get; set; }
+        public int IdReloj { get; set; }
 
         [Required, StringLength(40)]
-        public string CodigoSKU { get; set; } = null!;          // UNICO: marca + modelo + numOrden
+        public string CodigoSKU { get; set; } = null!;      // ÚNICO: MARCA-MODELO-NNN
 
-        public uint IdModeloReloj { get; set; }
-        public uint IdMarca { get; set; }
+        public int IdModeloReloj { get; set; }
+        public int IdMarca { get; set; }
         public byte IdEstadoReloj { get; set; }
 
         public int NumOrden { get; set; }
 
         [StringLength(500)]
-        public string? Descripcion { get; set; } = null!;           // ficha tecnica (cristal, movimiento, etc.)
+        public string? Descripcion { get; set; }
 
         [Required, StringLength(250)]
         public string UrlImagen { get; set; } = null!;
@@ -31,11 +31,9 @@ namespace Vantiq.Models
         public decimal Precio { get; set; }
 
         [Range(0, int.MaxValue, ErrorMessage = "El stock no puede ser negativo")]
-        public uint StockActual { get; set; }
+        public int StockActual { get; set; }
 
-     
-
-        public DateTime FechaHoraRegistro { get; set; }         // INMUTABLE (default GETDATE())
+        public DateTime FechaHoraRegistro { get; set; }     // default GETDATE()
 
         // Navegaciones
         [ForeignKey(nameof(IdModeloReloj))]
@@ -47,8 +45,7 @@ namespace Vantiq.Models
         [ForeignKey(nameof(IdEstadoReloj))]
         public EstadoReloj EstadoReloj { get; set; } = null!;
 
-        
-        public ICollection<DetallePedido> DetallesPedido { get; set; } = new List<DetallePedido>();
+        public ICollection<DetalleVenta> DetallesVenta { get; set; } = new List<DetalleVenta>();
         public ICollection<Kardex> MovimientosKardex { get; set; } = new List<Kardex>();
     }
 }

@@ -1,15 +1,14 @@
-@model List<Pedido>
+@model List<Venta>
 @{
-    ViewData["Title"] = "Pedidos";
+    ViewData["Title"] = "Ventas";
     var conteos = (Dictionary<byte, int>)ViewBag.Conteos;
     byte? filtro = ViewBag.Estado;
 
-    // Diccionario temporal para renderizar los filtros de estado basados en tu tabla ESTADO_PEDIDO
     var estadosFiltro = new Dictionary<byte, string>
     {
         { 1, "Pendiente" },
-        { 2, "Pagado" },
-        { 3, "Enviado" },
+        { 2, "Pagado"    },
+        { 3, "Enviado"   },
         { 4, "Entregado" },
         { 5, "Cancelado" }
     };
@@ -21,7 +20,7 @@
 
         <div class="col-lg-10">
             <h1 class="font-display mb-1"><i class="bi bi-receipt text-gold me-2" aria-hidden="true"></i>Gestión de ventas</h1>
-            <p class="text-muted-vq small mb-4">Ciclo de vida del pedido: Pendiente → Pagado → Enviado → Entregado</p>
+            <p class="text-muted-vq small mb-4">Ciclo de vida: Pendiente → Pagado → Enviado → Entregado</p>
 
             @* Filtros por estado (pills) + buscador en tiempo real *@
             <div class="table-toolbar mb-3">
@@ -30,10 +29,11 @@
 
                 @foreach (var estado in estadosFiltro)
                 {
-                    var total = conteos.TryGetValue(estado.Key, out var n) ? n : 0;
+                    var total  = conteos.TryGetValue(estado.Key, out var n) ? n : 0;
                     var activo = estado.Key == filtro;
                     <a class="estado-pill estado-@(estado.Value.ToLower())" asp-action="Index"
-                       asp-route-estado="@estado.Key" style="text-decoration:none; @(activo ? "" : "opacity:.55;")">
+                       asp-route-estado="@estado.Key"
+                       style="text-decoration:none; @(activo ? "" : "opacity:.55;")">
                         @estado.Value (@total)
                     </a>
                 }
@@ -56,28 +56,27 @@
                                 @foreach (var venta in Model)
                                 {
                                     <tr>
-                                        <td class="font-monospace small fw-semibold text-gold">@venta.CodigoPedido</td>
-                                        <td class="small text-muted-vq">@venta.FechaHoraPedido.ToString("dd/MM/yyyy HH:mm")</td>
-                                        <td>@venta.Cliente.Nombres @venta.Cliente.Apellidos</td>
+                                        <td class="font-monospace small fw-semibold text-gold">@Formato.CodigoVenta(venta.IdVenta)</td>
+                                        <td class="small text-muted-vq">@venta.FechaHoraVenta.ToString("dd/MM/yyyy HH:mm")</td>
+                                        <td>@venta.ClienteVisitante.NombresCliVisit @venta.ClienteVisitante.ApellidosCliVisit</td>
                                         <td>
-                                            @if (venta.IdUsuario != 0)
+                                            @if (venta.IdUsuario.HasValue)
                                             {
-                                                <span class="badge-vq badge-gold">Con Usuario</span>
+                                                <span class="badge-vq badge-gold">Con cuenta</span>
                                             }
                                             else
                                             {
-
                                                 <span class="badge-vq" style="background:var(--vq-secondary); color:var(--vq-muted);">Invitado</span>
                                             }
                                         </td>
-                                        <td>@string.Format("S/ {0:N2}", venta.Total)</td>
+                                        <td>@Formato.Soles(venta.MontoTotal)</td>
                                         <td>
-                                            <span class="estado-pill estado-@(venta.EstadoPedido.NombreEstadoPedido.ToLower())">
-                                                @venta.EstadoPedido.NombreEstadoPedido
+                                            <span class="estado-pill estado-@(venta.EstadoVenta.ToString().ToLower())">
+                                                @venta.EstadoVenta
                                             </span>
                                         </td>
                                         <td>
-                                            <a class="btn btn-outline-gold btn-sm" asp-action="Detalle" asp-route-id="@venta.IdPedido">
+                                            <a class="btn btn-outline-gold btn-sm" asp-action="Detalle" asp-route-id="@venta.IdVenta">
                                                 Gestionar
                                             </a>
                                         </td>
